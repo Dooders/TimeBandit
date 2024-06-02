@@ -1,2 +1,3 @@
-# TimeBandit
-A robust, feature-rich dynamic temporal meta-graph system
+# TimeBandit is a robust, feature-rich temporal meta-graph system
+
+
