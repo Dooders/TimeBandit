@@ -1,6 +1,7 @@
 import networkx as nx
 
 from bandit.state import Object
+from bandit.ticker import Ticker
 
 
 class Graph(nx.DiGraph):
@@ -11,6 +12,7 @@ class Graph(nx.DiGraph):
 
     def __init__(self):
         super().__init__()
+        self.tic = Ticker(1, 0, 10)
 
     def add_object(self, object: "Object") -> None:
         """
@@ -87,6 +89,9 @@ class Graph(nx.DiGraph):
         """
         for object in self.nodes:
             object.update()
+
+        # Update the time counter
+        self.cycle, self.step = self.tic.tok
 
         return self.state
 
