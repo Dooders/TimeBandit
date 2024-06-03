@@ -33,6 +33,8 @@ influences the object's behavior in the simulation.
 
 from abc import ABC
 
+from bandit.ticker import Ticker
+
 
 class State(ABC):
     """
@@ -196,6 +198,7 @@ class Object:
         self._step = 0
         self.root_id = "root"  #! Will automatically be updated
         self.temporal_id = "temporal"
+        self.tic = Ticker(self._cycle, self._step, self.steps_per_cycle)
 
     def __str__(self) -> str:
         return self.id(encode=False)
@@ -212,10 +215,8 @@ class Object:
         dict:
             The state of the object
         """
-        self._step += 1
-        if self._step == self.steps_per_cycle:
-            self._cycle += 1
-            self._step = 0
+
+        self._cycle, self._step = self.tic.tok
 
         return self.state
 
