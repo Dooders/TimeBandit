@@ -13,6 +13,8 @@ class Graph(nx.DiGraph):
     def __init__(self):
         super().__init__()
         self.tic = Ticker(1, 0, 10)
+        self.cycle = 1
+        self.step = 0
 
     def add_object(self, object: "Object") -> None:
         """
