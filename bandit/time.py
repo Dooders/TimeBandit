@@ -17,7 +17,7 @@ class Time(Graph):
 
     def __init__(self):
         super().__init__()
-        self.time = int(f"{self._cycle}.{self._step}")
+        self.time = f"Time: {self.cycle} {self.step}"
 
     def add_thread(self, object1: "Object", object2: "Object") -> None:
         """
