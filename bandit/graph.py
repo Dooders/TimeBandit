@@ -1,6 +1,5 @@
 import networkx as nx
 
-from bandit.state import Object
 from bandit.ticker import Ticker
 
 
@@ -16,7 +15,7 @@ class Graph(nx.DiGraph):
         self.cycle = 1
         self.step = 0
 
-    def add_object(self, object: "Object") -> None:
+    def add_object(self, object) -> None:
         """
         Adds an object to the space
 
@@ -25,9 +24,9 @@ class Graph(nx.DiGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object)
+        self.add_node(object, **object.state)
 
-    def remove_object(self, object: "Object") -> None:
+    def remove_object(self, object) -> None:
         """
         Removes an object from the space
 
