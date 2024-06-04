@@ -39,7 +39,7 @@ class Time(Graph):
         object_b (Object):
             The second object
         """
-        self.add_edge(object_a, object_b)
+        self.add_edge(object_a, object_b, type="thread")
 
     def remove_thread(self, object_a: "Object", object_b: "Object") -> None:
         """
@@ -82,4 +82,4 @@ class Time(Graph):
         """
         Returns the threads in the time
         """
-        return self.edges()
+        return self.edges(data=True)
