@@ -15,10 +15,12 @@ class Time(Graph):
 
     Methods
     -------
-    add_thread(object1, object2):
+    add_thread(object_a, object_b):
         Adds a thread between two objects
-    remove_thread(object1, object2):
+    remove_thread(object_a, object_b):
         Removes a thread between two objects
+    threads():
+        Returns the threads in the time
     """
 
     def __init__(self):
@@ -26,31 +28,31 @@ class Time(Graph):
         self.time = f"Time: {self.cycle} {self.step}"
         self.temporal_id_cache = {}
 
-    def add_thread(self, object1: "Object", object2: "Object") -> None:
+    def add_thread(self, object_a: "Object", object_b: "Object") -> None:
         """
         Adds a thread between two objects
 
         Parameters
         ----------
-        object1 (Object):
+        object_a (Object):
             The first object
-        object2 (Object):
+        object_b (Object):
             The second object
         """
-        self.add_edge(object1, object2)
+        self.add_edge(object_a, object_b)
 
-    def remove_thread(self, object1: "Object", object2: "Object") -> None:
+    def remove_thread(self, object_a: "Object", object_b: "Object") -> None:
         """
         Removes a thread between two objects
 
         Parameters
         ----------
-        object1 (Object):
+        object_a (Object):
             The first object
         object2 (Object):
             The second object
         """
-        self.remove_edge(object1, object2)
+        self.remove_edge(object_a, object_b)
 
     def add_space(self, space_state: dict) -> None:
         """
@@ -64,8 +66,20 @@ class Time(Graph):
         new_temporal_cache = {}
 
         for object in space_state.values():
-            print(f"Adding object {object} to time")
             temporal_id = object.get("temporal_id", 0)
             root_id = object.get("root_id", None)
             self.add_node(temporal_id, **object)
             new_temporal_cache[temporal_id] = root_id
+
+        # Add threads to any matching root_ids in the temporal_id_cache
+        for temporal_id, root_id in self.temporal_id_cache.items():
+            if root_id in space_state:
+                self.add_thread(temporal_id, space_state[root_id])
+
+        self.temporal_id_cache = new_temporal_cache
+
+    def threads(self) -> list:
+        """
+        Returns the threads in the time
+        """
+        return self.edges()
