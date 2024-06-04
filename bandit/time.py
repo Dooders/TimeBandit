@@ -6,6 +6,13 @@ class Time(Graph):
     Time class is a directed graph that represents the time of objects.
     It is a subclass of networkx.DiGraph.
 
+    Attributes
+    ----------
+    time (str):
+        The time of the time
+    temporal_id_cache (dict):
+        A dictionary that maps temporal ids to objects
+
     Methods
     -------
     add_thread(object1, object2):
@@ -17,6 +24,7 @@ class Time(Graph):
     def __init__(self):
         super().__init__()
         self.time = f"Time: {self.cycle} {self.step}"
+        self.temporal_id_cache = {}
 
     def add_thread(self, object1: "Object", object2: "Object") -> None:
         """
@@ -53,4 +61,11 @@ class Time(Graph):
         space_state (dict):
             The state of the space
         """
-        self.add_node(space_state)
+        new_temporal_cache = {}
+
+        for object in space_state.values():
+            print(f"Adding object {object} to time")
+            temporal_id = object.get("temporal_id", 0)
+            root_id = object.get("root_id", None)
+            self.add_node(temporal_id, **object)
+            new_temporal_cache[temporal_id] = root_id
