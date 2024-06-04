@@ -1,26 +1,4 @@
-from bandit.ticker import Ticker
-from bandit.util import generate_hash
-
-
-def temporal_id(root_id: str, cycle: int, step: int) -> str:
-    """
-    Returns the temporal id of an object
-
-    Parameters
-    ----------
-    root_id (str):
-        The root id of the object
-    cycle (int):
-        The cycle of the object
-    step (int):
-        The step of the object
-
-    Returns
-    -------
-    str:
-        The temporal id of the object
-    """
-    return f"{root_id}.{cycle}.{step}"
+import uuid
 
 
 class Object:
@@ -40,12 +18,16 @@ class Object:
     -------
     update():
         Updates the object state
-    encode_self():
+    encode():
         Encodes the object state
-    id(encode: bool = True):
-        Returns the id of the object
+    id(root: bool = False):
+        Returns the id of the object, temporal_id by default
     state():
         Returns the state of the object
+    cycle():
+        Returns the cycle of the object
+    step():
+        Returns the step of the object
     """
 
     def __init__(self, steps_size: int = 1) -> None:
@@ -58,20 +40,14 @@ class Object:
         self.steps_size = steps_size
         self._cycle = 1
         self._step = 0
-        self.root_id = "root_id"
-        self.temporal_id = "temporal_id"
-        self.root_id = generate_hash(self.state)
-        self.temporal_id = temporal_id(self.root_id, self._cycle, self._step)
-
-        self.tic = Ticker(
-            self._cycle, self._step, self.steps_size
-        )  #! Make a global ticker class that handles the primary clock and allows independent sub clocks
+        self.root_id = uuid.uuid4().hex
+        self.temporal_id = self.encode()
 
     def __str__(self) -> str:
-        return self.id(encode=False)
+        return self.id()
 
     def __repr__(self) -> str:
-        return self.id(encode=False)
+        return self.id()
 
     def update(self) -> dict:
         """
@@ -83,33 +59,38 @@ class Object:
             The state of the object
         """
 
-        self._cycle, self._step = self.tic.tok
-        self.root_id = generate_hash(self)
+        if self._step < self.steps_size - 1:
+            self._step += 1
+        else:
+            self._step = 0
+            self._cycle += 1
+
+        self.temporal_id = self.encode()
 
         return self.state
 
-    def encode_self(self) -> None:
+    def encode(self) -> str:
         """
         Encodes the object state
         """
-        self.temporal_id = f"{self.root_id}.{self._cycle}.{self._step}"
+        return f"{self.root_id}.{self._cycle}.{self._step}"
 
-    def id(self, encode: bool = True) -> str:
+    def id(self, root: bool = False) -> str:
         """
         Returns the id of the object
 
         Parameters
         ----------
-        encode (bool):
-            Whether to encode the object state or not
+        root (bool):
+            Whether to return the root id or the temporal id
 
         Returns
         -------
         str:
             The id of the object
         """
-        if encode:
-            self.encode_self()
+        if root:
+            return self.root_id
 
         return self.temporal_id
 
