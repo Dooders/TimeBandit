@@ -11,3 +11,7 @@ class Space(Graph):
 
     def __init__(self):
         super().__init__()
+
+    @property
+    def state(self):
+        return {node: self.nodes[node] for node in self.nodes()}

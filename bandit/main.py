@@ -1,16 +1,10 @@
+from bandit.object import Object
 from bandit.space import Space
+from bandit.ticker import Ticker
 from bandit.time import Time
-
-
 
 
 class TimeBandit:
     def __init__(self):
-        self.time_graph = Time()
-        self.space_graph = Space()
-
-    def tick(self):
-        self._time += 1
-
-    def get_time(self):
-        return self._time
+        self.time = Time()
+        self.space = Space()

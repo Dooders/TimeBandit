@@ -1,6 +1,9 @@
 class Ticker:
     """
     A class to represent the ticker of an object
+    
+    #! Build this out a lot more, to have more methods and be the central clock that can make branches of independent clocks
+    #! Maybe call FatherTime, or GrandfatherClock
     """
 
     def __init__(self, cycle: int, step: int, steps_per_cycle: int = 10) -> None:

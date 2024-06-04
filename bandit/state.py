@@ -29,10 +29,16 @@ influences the object's behavior in the simulation.
 #!   encoding more and more, as long as the decoding output is correct
 #! Will hopefully need less and less context/information to reinstate the object 
 #!   from the encoded data
+
+
+#! state method that turns the state into a tensor, combine that with space input state tensor, to input into the object update method for "updating"
+#! update method must log the update_time attribute of the object
+#! so all requests to update come through the State class and it controls the update process of the object(s)
 """
 
 from abc import ABC
 
+from bandit.object import ObjectState
 from bandit.ticker import Ticker
 
 
@@ -159,120 +165,3 @@ class ObjectState(State):
         self.cycle = cycle
         self.step = step
         self.steps_per_cycle = steps_per_cycle
-
-
-class Object:
-    """
-    A class to represent an object
-
-    Attributes
-    ----------
-    steps_per_cycle (int):
-        The number of steps per cycle
-    root_id (str):
-        The root id of the object
-    temporal_id (str):
-        The temporal id of the object
-
-    Methods
-    -------
-    update():
-        Updates the object state
-    encode_self():
-        Encodes the object state
-    id(encode: bool = True):
-        Returns the id of the object
-    state():
-        Returns the state of the object
-    """
-
-    def __init__(self, steps_per_cycle: int = 1) -> None:
-        """
-        Parameters
-        ----------
-        steps_per_cycle (int):
-            The number of steps per cycle
-        """
-        self.steps_per_cycle = steps_per_cycle
-        self._cycle = 1
-        self._step = 0
-        self.root_id = "root"  #! Will automatically be updated
-        self.temporal_id = "temporal"
-        self.tic = Ticker(self._cycle, self._step, self.steps_per_cycle)
-
-    def __str__(self) -> str:
-        return self.id(encode=False)
-
-    def __repr__(self) -> str:
-        return self.id(encode=False)
-
-    def update(self) -> dict:
-        """
-        Updates the object state
-
-        Returns
-        -------
-        dict:
-            The state of the object
-        """
-
-        self._cycle, self._step = self.tic.tok
-
-        return self.state
-
-    def encode_self(self) -> None:
-        """
-        Encodes the object state
-        """
-        self.temporal_id = f"{self.root_id}.{self._cycle}.{self._step}"
-
-    def id(self, encode: bool = True) -> str:
-        """
-        Returns the id of the object
-
-        Parameters
-        ----------
-        encode (bool):
-            Whether to encode the object state or not
-
-        Returns
-        -------
-        str:
-            The id of the object
-        """
-        if encode:
-            self.encode_self()
-
-        return self.temporal_id
-
-    @property
-    def state(self) -> "ObjectState":
-        """
-        Returns the state of the object
-
-        Returns
-        -------
-        dict:
-            The state of the object
-        """
-        return ObjectState(
-            self.root_id,
-            self.temporal_id,
-            self._cycle,
-            self._step,
-            self.steps_per_cycle,
-        )
-
-    @property
-    def cycle(self) -> int:
-        """
-        Returns the cycle of the object
-        """
-        return self._cycle
-
-    @property
-    def step(self) -> int:
-        """
-        Returns the step of the object
-        """
-        return self._step

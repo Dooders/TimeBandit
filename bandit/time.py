@@ -1,5 +1,4 @@
 from bandit.graph import Graph
-from bandit.state import Object
 
 
 class Time(Graph):
@@ -44,3 +43,14 @@ class Time(Graph):
             The second object
         """
         self.remove_edge(object1, object2)
+
+    def add_space(self, space_state: dict) -> None:
+        """
+        Adds a space to the time
+
+        Parameters
+        ----------
+        space_state (dict):
+            The state of the space
+        """
+        self.add_node(space_state)
