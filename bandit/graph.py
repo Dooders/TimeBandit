@@ -7,9 +7,35 @@ class Graph(nx.DiGraph):
     """
     Space class is a directed graph that represents the space of objects.
     It is a subclass of networkx.DiGraph.
+
+    Attributes
+    ----------
+    tic (Ticker):
+        The ticker object
+    cycle (int):
+        The current cycle
+    step (int):
+        The current step
+
+    Methods
+    -------
+    add_object(object):
+        Adds an object to the space
+    remove_object(object):
+        Removes an object from the space
+    get_state(object_id):
+        Returns the state of the object
+    get_object(object_id):
+        Returns the object
+    draw_space():
+        Draws the space
+    update(input):
+        Updates the object state
+    draw():
+        Draws the graph
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.tic = Ticker(1, 0, 10)
         self.cycle = 1
@@ -95,6 +121,12 @@ class Graph(nx.DiGraph):
         self.cycle, self.step = self.tic.tok
 
         return self.state
+
+    def draw(self) -> None:
+        """
+        Draws the graph
+        """
+        nx.draw(self, with_labels=True, font_weight="bold")
 
     @property
     def state(self) -> dict:
