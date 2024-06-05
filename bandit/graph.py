@@ -96,9 +96,6 @@ class Graph(nx.DiGraph):
         """
         return self.nodes(object_id)
 
-    def draw_space(self) -> None:
-        nx.draw(self, with_labels=True, font_weight="bold")
-
     def update(self, input) -> dict:
         """
         Updates the object state
