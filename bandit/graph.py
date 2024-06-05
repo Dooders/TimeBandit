@@ -50,7 +50,7 @@ class Graph(nx.DiGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object, **object.state)
+        self.add_node(object.root_id, **object.state)
 
     def remove_object(self, object) -> None:
         """
