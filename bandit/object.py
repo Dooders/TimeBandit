@@ -1,5 +1,7 @@
 import uuid
 
+from bandit.clock import Clock
+
 
 class Object:
     """
@@ -40,6 +42,7 @@ class Object:
         self.steps_size = steps_size
         self._cycle = 1
         self._step = 0
+        self.clock = Clock(steps_size)
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
 
@@ -59,11 +62,7 @@ class Object:
             The state of the object
         """
 
-        if self._step < self.steps_size - 1:
-            self._step += 1
-        else:
-            self._step = 0
-            self._cycle += 1
+        self._cycle, self._step = self.clock.step()
 
         self.temporal_id = self.encode()
 
