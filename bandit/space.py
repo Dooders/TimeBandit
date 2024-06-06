@@ -1,5 +1,3 @@
-import networkx as nx
-
 from bandit.graph import Graph
 
 
