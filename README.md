@@ -11,3 +11,5 @@ Threads: Temporal edges, edges between temporal states and not edges between obj
 Relationships: edges between objects in a space. not between temporal states. Many types, highly customizable.
 
 Interactions: edges between objects that have causul effects. Many types, highly customizable.
+
+**Still a work in progress**
