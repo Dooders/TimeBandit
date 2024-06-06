@@ -39,7 +39,6 @@ influences the object's behavior in the simulation.
 from abc import ABC
 
 from bandit.object import ObjectState
-from bandit.ticker import Ticker
 
 
 class State(ABC):
