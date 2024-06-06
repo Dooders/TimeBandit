@@ -1,6 +1,6 @@
 import networkx as nx
 
-from bandit.ticker import Ticker
+from bandit.clock import Clock
 
 
 class Graph(nx.DiGraph):
@@ -10,8 +10,6 @@ class Graph(nx.DiGraph):
 
     Attributes
     ----------
-    tic (Ticker):
-        The ticker object
     cycle (int):
         The current cycle
     step (int):
@@ -35,11 +33,12 @@ class Graph(nx.DiGraph):
         Draws the graph
     """
 
-    def __init__(self) -> None:
+    def __init__(self, step_size: int = 1) -> None:
         super().__init__()
-        self.tic = Ticker(1, 0, 10)
-        self.cycle = 1
-        self.step = 0
+        self.step_size = step_size
+        self.clock = Clock(step_size)
+        self._cycle = 1
+        self._step = 0
 
     def add_object(self, object) -> None:
         """
@@ -96,7 +95,7 @@ class Graph(nx.DiGraph):
         """
         return self.nodes(object_id)
 
-    def update(self, input) -> dict:
+    def update(self) -> dict:
         """
         Updates the object state
 
@@ -115,7 +114,7 @@ class Graph(nx.DiGraph):
             object.update()
 
         # Update the time counter
-        self.cycle, self.step = self.tic.tok
+        self._cycle, self._step = self.clock.step()
 
         return self.state
 
@@ -124,6 +123,13 @@ class Graph(nx.DiGraph):
         Draws the graph
         """
         nx.draw(self, with_labels=True, font_weight="bold")
+        
+    @property
+    def objects(self) -> list:
+        """
+        Returns the objects in the graph
+        """
+        yield from self.nodes
 
     @property
     def state(self) -> dict:
@@ -133,4 +139,8 @@ class Graph(nx.DiGraph):
         dict:
             The state of the object
         """
-        return self.nodes
+        return {
+            "cycle": self.cycle,
+            "step": self.step,
+            "time": self.clock.time,
+        }
