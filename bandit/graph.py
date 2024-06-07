@@ -49,7 +49,7 @@ class Graph(nx.DiGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object.root_id, **object.state)
+        self.add_node(object.root_id, object=object)
 
     def remove_object(self, object) -> None:
         """
@@ -125,11 +125,11 @@ class Graph(nx.DiGraph):
         nx.draw(self, with_labels=True, font_weight="bold")
         
     @property
-    def objects(self) -> list:
+    def objects(self) -> dict:
         """
         Returns the objects in the graph
         """
-        yield from self.nodes
+        return {node: self.nodes[node] for node in self.nodes()}
 
     @property
     def state(self) -> dict:
