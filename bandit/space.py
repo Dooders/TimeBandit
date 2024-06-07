@@ -12,4 +12,7 @@ class Space(Graph):
 
     @property
     def state(self):
-        return {node: self.nodes[node] for node in self.nodes()}
+        """
+        Return the state from each object in the space.
+        """
+        return {node: self.nodes[node] for node in self.objects}

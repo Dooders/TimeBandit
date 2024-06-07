@@ -67,11 +67,15 @@ class Time(Graph):
         """
         new_temporal_cache = {}
         
+        print(f"Space state: {space_state}")
+        
         for object in space_state.values():
+            print(f"Object: {object}")
             temporal_id = object.get("temporal_id", 0)
             root_id = object.get("root_id", None)
             self.add_node(temporal_id, **object)
             new_temporal_cache[temporal_id] = root_id
+            print(f"Added {temporal_id} with root_id {root_id}")
 
         # Add threads to any matching root_ids in the root_id_cache
         for temporal_id, root_id in self.root_id_cache.items():
