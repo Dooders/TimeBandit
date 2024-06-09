@@ -1,8 +1,10 @@
-from bandit.graph import Graph
 from typing import TYPE_CHECKING
+
+from bandit.graph import Graph
 
 if TYPE_CHECKING:
     from bandit.object import Object
+
 
 class Time(Graph):
     """
@@ -66,16 +68,12 @@ class Time(Graph):
             The state of the space
         """
         new_temporal_cache = {}
-        
-        print(f"Space state: {space_state}")
-        
+
         for object in space_state.values():
-            print(f"Object: {object}")
             temporal_id = object.get("temporal_id", 0)
             root_id = object.get("root_id", None)
             self.add_node(temporal_id, **object)
             new_temporal_cache[temporal_id] = root_id
-            print(f"Added {temporal_id} with root_id {root_id}")
 
         # Add threads to any matching root_ids in the root_id_cache
         for temporal_id, root_id in self.root_id_cache.items():
@@ -83,7 +81,6 @@ class Time(Graph):
                 self.add_thread(temporal_id, space_state[root_id])
 
         self.root_id_cache = new_temporal_cache
-
 
     def threads(self) -> list:
         """
