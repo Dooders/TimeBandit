@@ -123,13 +123,14 @@ class Graph(nx.DiGraph):
         Draws the graph
         """
         nx.draw(self, with_labels=True, font_weight="bold")
-        
+
     @property
     def objects(self) -> dict:
         """
         Returns the objects in the graph
         """
-        return {node: self.nodes[node] for node in self.nodes()}
+        for node in self.nodes():
+            yield self.nodes[node]["object"]
 
     @property
     def state(self) -> dict:
