@@ -15,4 +15,4 @@ class Space(Graph):
         """
         Return the state from each object in the space.
         """
-        return {node: self.nodes[node] for node in self.objects}
+        return {node: node.state for node in self.objects}
