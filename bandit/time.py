@@ -4,9 +4,80 @@ dynamically structured space. This space is specific and organized, not a wide-o
 undefined environment, allowing for precise and adaptive temporal modeling.
 
 It functions as a directed graph, storing connections between object states in 
-specialized edges called Threads. Each thread links an object state to its previous 
-state, tracing back to the initial object state, thereby creating a coherent 
-temporal sequence.
+specialized edges called Threads. Each thread links an object state at a given time 
+step (t_i) to its state at the previous time step (t_{i-1}), tracing back to the 
+initial object state (t_0). This notation, referred to here as Temporal Notation, can 
+also extend to future states (t_{i+1}), thereby creating a coherent temporal sequence.
+
+Temporal Notation
+-----------------
+Temporal Notation is a system used to reference the state of objects at specific 
+points in time, both objectively within the simulation and relatively for individual 
+objects. 
+
+Objective Temporal Notation
+---------------------------
+Objective Temporal Notation refers to the overall timeline of the simulation. Each 
+state is denoted by a subscript indicating its position in the global sequence of 
+time steps.
+
+- t_i: The current state at the global time step i.
+- t_{i-1}: The previous state at the global time step i-1.
+- t_0: The initial state at the starting time step.
+- t_{i+1}: The future state at the global time step i+1.
+
+Relative Temporal Notation
+---------------------------
+Relative Temporal Notation refers to the timeline of an individual object within the 
+simulation. Each state is denoted by a subscript indicating its position in the 
+object's own sequence of time steps.
+
+- t_i^obj: The current state of the object at its local time step i.
+- t_{i-1}^obj: The previous state of the object at its local time step i-1.
+- t_0^obj: The initial state of the object at its starting time step.
+- t_{i+1}^obj: The future state of the object at its local time step i+1.
+
+Use
+---
+Temporal Notation helps in clearly identifying and referencing the states of objects 
+as they evolve over time, both from a global simulation perspective and an individual 
+object perspective. It provides a consistent and concise way to trace the sequence of 
+states and the transitions between them.
+
+Example
+-------
+Consider an object that changes its state over three global time steps. The states 
+can be denoted as follows:
+
+Objective Temporal Notation:
+- t_0: Initial global state
+- t_1: Global state at time step 1
+- t_2: Global state at time step 2
+
+Relative Temporal Notation for an object:
+- t_0^obj: Initial state of the object
+- t_1^obj: State of the object at its local time step 1
+- t_2^obj: State of the object at its local time step 2
+
+In the Time module, a Thread connects these states to form a directed sequence:
+t_0 -> t_1 -> t_2 (Objective)
+t_0^obj -> t_1^obj -> t_2^obj (Relative)
+
+Here’s how you might add these states and threads in code:
+
+    from time_module import Time, Object
+
+    time_graph = Time()
+
+    initial_state = Object(temporal_id=0, data=...)
+    state1 = Object(temporal_id=1, data=...)
+    state2 = Object(temporal_id=2, data=...)
+
+    time_graph.add_space({initial_state.temporal_id: initial_state})
+    time_graph.add_space({state1.temporal_id: state1})
+    time_graph.add_space({state2.temporal_id: state2})
+
+    print(time_graph.threads())
 """
 
 from typing import TYPE_CHECKING
@@ -17,8 +88,7 @@ if TYPE_CHECKING:
     from bandit.object import Object
 
 
-#! TODO: Create data class for space_state, temporal_id, root_id, and object_id
-#! TODO: Find better way to communicate object state of interest and reference previous (or even future) states (time subscript_i ??)
+#! TODO: Create data class for space_state, temporal_id, root_id, object_id, and root_id_cache
 #! TODO: ThreadView class to represent threads (working like EdgeView???)
 #! TODO: TimeView class to represent the time (working like NodeView???)
 
