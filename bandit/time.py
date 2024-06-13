@@ -1,8 +1,12 @@
 """
-The Time module is designed to represent the temporal state of objects in a
-?concrete? space. It is a directed graph that stores connections between object
-states in specialized edges called Threads. Where a thread connects an 
-object state to its previous object state, back to the initial object state.
+The Time module is designed to represent the temporal state of objects within a 
+dynamically structured space. This space is specific and organized, not a wide-open, 
+undefined environment, allowing for precise and adaptive temporal modeling.
+
+It functions as a directed graph, storing connections between object states in 
+specialized edges called Threads. Each thread links an object state to its previous 
+state, tracing back to the initial object state, thereby creating a coherent 
+temporal sequence.
 """
 
 from typing import TYPE_CHECKING
