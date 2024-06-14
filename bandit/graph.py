@@ -117,12 +117,12 @@ class Graph(nx.DiGraph):
             yield self.nodes[node]["object"]
 
     @property
-    def state(self) -> dict:
+    def states(self) -> dict:
         """
         Returns
         -------
         dict:
             The state of the object
         """
-        return {
-        }
+        for object in self.objects:
+            yield object.state
