@@ -12,7 +12,7 @@ also extend to future states (t_{i+1}), thereby creating a coherent temporal seq
 Temporal Notation
 -----------------
 Temporal Notation is a system used to reference the state of objects at specific 
-points in time, both objectively within the simulation and relatively for individual 
+points in time, both objectively within the simulation and relatively for specific 
 objects. 
 
 Objective Temporal Notation
@@ -63,7 +63,7 @@ In the Time module, a Thread connects these states to form a directed sequence:
 t_0 -> t_1 -> t_2 (Objective)
 t_0^obj -> t_1^obj -> t_2^obj (Relative)
 
-Here’s how you might add these states and threads in code:
+Here is how you might add these states and threads in code:
 
     from time_module import Time, Object
 
@@ -91,6 +91,10 @@ if TYPE_CHECKING:
 #! TODO: Create data class for space_state, temporal_id, root_id, object_id, and root_id_cache
 #! TODO: ThreadView class to represent threads (working like EdgeView???)
 #! TODO: TimeView class to represent the time (working like NodeView???)
+#! TODO: Design out ObjectiveTime and RelativeTime
+#! TODO: Better way to represent time other than incrementing integers
+#! TODO: Exception handling and unit testing
+#! TODO: Add threads to spaces???? Is that even needed?
 
 
 class Time(Graph):
