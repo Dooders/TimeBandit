@@ -32,10 +32,9 @@ Relative Temporal Notation refers to the timeline of an individual object within
 simulation. Each state is denoted by a subscript indicating its position in the 
 object's own sequence of time steps.
 
-- t_i^obj: The current state of the object at its local time step i.
-- t_{i-1}^obj: The previous state of the object at its local time step i-1.
-- t_0^obj: The initial state of the object at its starting time step.
-- t_{i+1}^obj: The future state of the object at its local time step i+1.
+- t_0^obj: The current state of the object.
+- t_-1^obj: The previous state of the object at its local time step i-1.
+- t_+1^obj: The future state of the object at its local time step i+1.
 
 Use
 ---
@@ -57,7 +56,7 @@ Objective Temporal Notation:
 Relative Temporal Notation for an object:
 - t_0^obj: Current state of the object
 - t_-1^obj: State of the object from the previous step
-- t_-2^obj: State of the object from the -2 step
+- t_-2^obj: State of the object from the -2 steps
 
 In the Time module, a Thread connects these states to form a directed sequence:
 t_0 -> t_1 -> t_2 (Objective)
