@@ -8,13 +8,6 @@ class Graph(nx.DiGraph):
     Space class is a directed graph that represents the space of objects.
     It is a subclass of networkx.DiGraph.
 
-    Attributes
-    ----------
-    cycle (int):
-        The current cycle
-    step (int):
-        The current step
-
     Methods
     -------
     add_object(object):
@@ -37,8 +30,6 @@ class Graph(nx.DiGraph):
         super().__init__()
         self.step_size = step_size
         self.clock = Clock(step_size)
-        self._cycle = 1
-        self._step = 0
 
     def add_object(self, object) -> None:
         """
@@ -141,7 +132,4 @@ class Graph(nx.DiGraph):
             The state of the object
         """
         return {
-            "cycle": self.cycle,
-            "step": self.step,
-            "time": self.clock.time,
         }
