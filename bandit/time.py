@@ -1,5 +1,5 @@
 """
-The Time module is designed to represent the temporal state of objects within a 
+The Time module is designed to contain the temporal state of objects within a 
 dynamically structured space. This space is specific and organized, not a wide-open, 
 undefined environment, allowing for precise and adaptive temporal modeling.
 
