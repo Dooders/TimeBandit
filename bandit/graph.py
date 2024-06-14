@@ -1,7 +1,5 @@
 import networkx as nx
 
-from bandit.clock import Clock
-
 
 class Graph(nx.DiGraph):
     """
@@ -26,10 +24,8 @@ class Graph(nx.DiGraph):
         Draws the graph
     """
 
-    def __init__(self, step_size: int = 1) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.step_size = step_size
-        self.clock = Clock(step_size)
 
     def add_object(self, object) -> None:
         """
@@ -103,9 +99,6 @@ class Graph(nx.DiGraph):
         """
         for object in self.nodes:
             object.update()
-
-        # Update the time counter
-        self._cycle, self._step = self.clock.step()
 
         return self.state
 
