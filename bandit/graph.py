@@ -1,19 +1,10 @@
 import networkx as nx
 
-from bandit.clock import Clock
-
 
 class Graph(nx.DiGraph):
     """
     Space class is a directed graph that represents the space of objects.
     It is a subclass of networkx.DiGraph.
-
-    Attributes
-    ----------
-    cycle (int):
-        The current cycle
-    step (int):
-        The current step
 
     Methods
     -------
@@ -33,12 +24,8 @@ class Graph(nx.DiGraph):
         Draws the graph
     """
 
-    def __init__(self, step_size: int = 1) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.step_size = step_size
-        self.clock = Clock(step_size)
-        self._cycle = 1
-        self._step = 0
 
     def add_object(self, object) -> None:
         """
@@ -113,9 +100,6 @@ class Graph(nx.DiGraph):
         for object in self.nodes:
             object.update()
 
-        # Update the time counter
-        self._cycle, self._step = self.clock.step()
-
         return self.state
 
     def draw(self) -> None:
@@ -133,15 +117,12 @@ class Graph(nx.DiGraph):
             yield self.nodes[node]["object"]
 
     @property
-    def state(self) -> dict:
+    def states(self) -> dict:
         """
         Returns
         -------
         dict:
             The state of the object
         """
-        return {
-            "cycle": self.cycle,
-            "step": self.step,
-            "time": self.clock.time,
-        }
+        for object in self.objects:
+            yield object.state
