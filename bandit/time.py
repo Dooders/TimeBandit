@@ -55,13 +55,13 @@ Objective Temporal Notation:
 - t_2: Global state at time step 2
 
 Relative Temporal Notation for an object:
-- t_0^obj: Initial state of the object
-- t_1^obj: State of the object at its local time step 1
-- t_2^obj: State of the object at its local time step 2
+- t_0^obj: Current state of the object
+- t_-1^obj: State of the object from the previous step
+- t_-2^obj: State of the object from the -2 step
 
 In the Time module, a Thread connects these states to form a directed sequence:
 t_0 -> t_1 -> t_2 (Objective)
-t_0^obj -> t_1^obj -> t_2^obj (Relative)
+t_-2^obj <- t_-1^obj <- t_0^obj (Relative)
 
 Here’s how you might add these states and threads in code:
 
