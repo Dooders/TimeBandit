@@ -94,7 +94,10 @@ if TYPE_CHECKING:
 #! TODO: Better way to represent time other than incrementing integers
 #! TODO: Exception handling and unit testing
 #! TODO: Add threads to spaces???? Is that even needed?
+#! TODO: Add clock to time???
+#! TODO: Conceptualize Branches, back tracking and starting new branches. Allows for easy reruns and changes to see the effects knowing the previous states
 
+#! Make a point in time a node, a space and objects are tied to that point by an Anchor edge
 
 class Time(Graph):
     """
