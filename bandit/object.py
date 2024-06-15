@@ -1,3 +1,29 @@
+"""
+An object is a fundamental component of TimeBandit represented as a specialized node in the 
+simulation that is updated and has a state
+
+The Object class is designed to contain the state of the object and its update method
+
+An object exists in a Space and is anchored to a Point in Time.
+
+An object can be tied to other agents in the same space and can be used to model
+a variety of phenomena such as the weather, the growth of a population, the 
+traffic flow in a city, or the spread of a disease.
+
+Example
+-------
+Consider a weather object that exists in a space and is anchored to a point in time.
+The weather object can be used to model the weather in a city and can be tied to other
+objects in the same space to model the weather in a city.
+
+Here is how you can create an object in code
+
+```python
+weather = Object()
+```
+
+"""
+
 import uuid
 
 from bandit.clock import Clock
@@ -5,7 +31,7 @@ from bandit.clock import Clock
 
 class Object:
     """
-    A class to represent an object
+    A class to represent an object in a simulation
 
     Attributes
     ----------
