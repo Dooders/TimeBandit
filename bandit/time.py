@@ -99,7 +99,7 @@ if TYPE_CHECKING:
 class Time(Graph):
     """
     Time class is a directed graph that represents the time of objects.
-    It is a subclass of networkx.DiGraph.
+    It is a subclass of the Graph class.
 
     A Thread is a directed edge between an object state in the previous
     time and the object state in the current time.

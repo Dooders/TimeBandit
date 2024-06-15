@@ -63,6 +63,21 @@ class Space(Graph):
     """
     Space class is a directed graph that represents the space of objects.
     It is a subclass of networkx.DiGraph.
+
+    Methods
+    -------
+    add_relationship(object1, object2, relationship)
+        Add a relationship between two objects.
+    remove_relationship(object1, object2)
+        Remove a relationship between two objects.
+    add_interaction(object1, object2, interaction)
+        Add an interaction between two objects.
+    remove_interaction(object1, object2)
+        Remove an interaction between two objects.
+    object_count
+        Return the number of objects in the space.
+    state
+        Return the state of the space and the state of the objects in the space
     """
 
     def __init__(self) -> None:

@@ -3,8 +3,11 @@ import networkx as nx
 
 class Graph(nx.DiGraph):
     """
-    Space class is a directed graph that represents the space of objects.
+    Graph class is a abstract class that represents a graph.
     It is a subclass of networkx.DiGraph.
+
+    It is intended to be subclassed by concrete implementations of graphs. Like
+    the Space class and the Time class.
 
     Methods
     -------
