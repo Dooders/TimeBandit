@@ -1,15 +1,12 @@
-# *Explore time and space like TimeBandits*
+# TimeBandit
 
+![Project Status](https://img.shields.io/badge/status-in%20development-orange)
 
-TimeBandit is a robust, feature-rich temporal simulation engine
+**Explore time and space like TimeBandits**
 
+TimeBandit is an object-oriented simulation framework in Python.
 
-Temporal Relationship Object Graph System (TROGS) is a framework for modeling and analyzing evolving relationships between objects over time. TROGS captures and visualizes temporal states and interactions, providing a clear representation of how objects and their connections change across different time steps.
+## Project Status
 
-Threads: Temporal edges, edges between temporal states and not edges between objects in a specific state. 2 types, Self and Root
+This framework is currently **in development**. Please note that it is not yet stable, and breaking changes may occur.
 
-Relationships: edges between objects in a space. not between temporal states. Many types, highly customizable.
-
-Interactions: edges between objects that have causul effects. Many types, highly customizable.
-
-**Still a work in progress**
