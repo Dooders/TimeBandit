@@ -5,3 +5,4 @@
         1. Relationships
         2. Threads
         3. Interactions
+    4. object itself is inanimate, an agent would be an object with some amount of agency to determine it's next state
