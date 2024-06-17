@@ -66,8 +66,6 @@ class Object:
             The number of steps per cycle
         """
         self.steps_size = steps_size
-        self._cycle = 1
-        self._step = 0
         self.clock = Clock(steps_size)
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
@@ -88,8 +86,7 @@ class Object:
             The state of the object
         """
 
-        self._cycle, self._step = self.clock.step()
-
+        self.clock.update()
         self.temporal_id = self.encode()
 
         return self.state
@@ -98,7 +95,7 @@ class Object:
         """
         Encodes the object state
         """
-        return f"{self.root_id}.{self._cycle}.{self._step}"
+        return f"{self.root_id}.{self.clock.cycle}.{self.clock.step}"
 
     def id(self, root: bool = False) -> str:
         """
@@ -130,8 +127,8 @@ class Object:
             The state of the object
         """
         return {
-            "cycle": self._cycle,
-            "step": self._step,
+            "cycle": self.clock.cycle,
+            "step": self.clock.step,
             "root_id": self.root_id,
             "temporal_id": self.temporal_id,
         }
@@ -141,11 +138,11 @@ class Object:
         """
         Returns the cycle of the object
         """
-        return self._cycle
+        return self.clock.cycle
 
     @property
     def step(self) -> int:
         """
         Returns the step of the object
         """
-        return self._step
+        return self.clock.step
