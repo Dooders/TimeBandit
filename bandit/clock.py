@@ -7,7 +7,7 @@ class Clock:
 
     Methods
     --------
-    step()
+    update()
         Steps the clock by 1 step.
         Updates the object's step and cycle properties.
 
@@ -40,7 +40,7 @@ class Clock:
         self._step = 0
         self._start_time = time.time()
 
-    def step(self) -> None:
+    def update(self) -> None:
         """
         Steps the clock by 1 step.
         Updates the object's step and cycle properties.
@@ -49,13 +49,13 @@ class Clock:
         if self._step >= self.steps_per_cycle:
             self._cycle += 1
             self._step = 0
-            
+
         return self._cycle, self._step
-    
+
     def clone(self) -> "Clock":
         """
         Returns a clone of the clock with the same steps_per_cycle and current time in the simulation
-        
+
         Returns
         --------
         Clock
@@ -76,3 +76,17 @@ class Clock:
         Returns the real time since the clock was started.
         """
         return time.time() - self._start_time
+
+    @property
+    def cycle(self) -> int:
+        """
+        Returns the current cycle number.
+        """
+        return self._cycle
+
+    @property
+    def step(self) -> int:
+        """
+        Returns the current step number.
+        """
+        return self._step
