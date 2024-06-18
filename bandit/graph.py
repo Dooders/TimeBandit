@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 import networkx as nx
+
+if TYPE_CHECKING:
+    from bandit.object import Object
 
 
 class Graph(nx.DiGraph):
@@ -15,8 +20,6 @@ class Graph(nx.DiGraph):
         Adds an object to the space
     remove_object(object):
         Removes an object from the space
-    get_state(object_id):
-        Returns the state of the object
     get_object(object_id):
         Returns the object
     draw_space():
@@ -25,6 +28,8 @@ class Graph(nx.DiGraph):
         Updates the object state
     draw():
         Draws the graph
+    state():
+        Returns the state of the graph
     """
 
     def __init__(self) -> None:
@@ -52,24 +57,7 @@ class Graph(nx.DiGraph):
         """
         self.remove_node(object)
 
-    def get_state(self, object_id) -> dict:
-        """
-        Returns the state of the object
-
-        Parameters
-        ----------
-        object_id (str):
-            The id of the object
-
-        Returns
-        -------
-        dict:
-            The state of the object
-        """
-        object_node = self.nodes(object_id)
-        return dict(object_node)
-
-    def get_object(self, object_id) -> dict:
+    def get_object(self, object_id) -> "Object":
         """
         Returns the object
 
@@ -80,10 +68,10 @@ class Graph(nx.DiGraph):
 
         Returns
         -------
-        dict:
+        Object:
             The object
         """
-        return self.nodes(object_id)
+        return self.nodes[object_id]["object"]
 
     def update(self) -> dict:
         """
@@ -100,7 +88,7 @@ class Graph(nx.DiGraph):
         - Finalize update
         - Return the state of the object
         """
-        for object in self.nodes:
+        for object in self.objects:
             object.update()
 
         return self.state
@@ -120,12 +108,8 @@ class Graph(nx.DiGraph):
             yield self.nodes[node]["object"]
 
     @property
-    def states(self) -> dict:
+    def state(self) -> dict:
         """
-        Returns
-        -------
-        dict:
-            The state of the object
+        Returns the state of the graph
         """
-        for object in self.objects:
-            yield object.state
+        return {object.root_id: object.state for object in self.objects}
