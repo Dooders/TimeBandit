@@ -84,7 +84,7 @@ class Space(Graph):
         super().__init__()
 
     def add_relationship(
-        self, object1: Object, object2: Object, relationship: str
+        self, object1: "Object", object2: "Object", relationship: str
     ) -> None:
         """
         Add a relationship between two objects.
@@ -100,21 +100,21 @@ class Space(Graph):
         """
         self.add_edge(object1, object2, relationship=relationship)
 
-    def remove_relationship(self, object1: Object, object2: Object) -> None:
+    def remove_relationship(self, object1: "Object", object2: "Object") -> None:
         """
         Remove a relationship between two objects.
         """
         self.remove_edge(object1, object2)
 
     def add_interaction(
-        self, object1: Object, object2: Object, interaction: str
+        self, object1: "Object", object2: "Object", interaction: str
     ) -> None:
         """
         Add an interaction between two objects.
         """
         self.add_edge(object1, object2, interaction=interaction)
 
-    def remove_interaction(self, object1: Object, object2: Object) -> None:
+    def remove_interaction(self, object1: "Object", object2: "Object") -> None:
         """
         Remove an interaction between two objects.
         """
