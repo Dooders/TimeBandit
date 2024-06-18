@@ -37,6 +37,8 @@ class Object:
     ----------
     steps_size (int):
         The number of steps per cycle
+    clock (Clock):
+        The clock of the object
     root_id (str):
         The root id of the object
     temporal_id (str):
