@@ -173,9 +173,9 @@ class Node:
         self.next = None
         self.prev = None
         
-#! Is node the object? or point in time? neither?
+#! Is node the object state? or point in time? neither?
 
-class CircularBuffer:
+class TemporalStates:
     def __init__(self, size):
         self.size = size
         self.head = None
