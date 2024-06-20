@@ -99,6 +99,7 @@ if TYPE_CHECKING:
 
 #! Make a point in time a node, a space and objects are tied to that point by an Anchor edge
 
+
 class Time(Graph):
     """
     Time class is a directed graph that represents the time of objects.
@@ -160,7 +161,7 @@ class Time(Graph):
         new_temporal_cache = {}
 
         # Add current object states to the time graph
-        for object in space_state.values():
+        for object in space_state["objects"].values():
             temporal_id = object.get("temporal_id", 0)
             root_id = object.get("root_id", None)
             self.add_node(temporal_id, **object)
@@ -179,6 +180,12 @@ class Time(Graph):
         Returns the threads in the time
         """
         return self.edges(data=True)
+    
+    def spaces(self) -> list:
+        """
+        Returns the spaces in the time
+        """
+        return self.nodes(data=True)
 
 
 """
