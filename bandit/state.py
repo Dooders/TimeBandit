@@ -164,3 +164,64 @@ class ObjectState(State):
         self.cycle = cycle
         self.step = step
         self.steps_per_cycle = steps_per_cycle
+
+
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+        
+#! Is node the object state? or point in time? neither?
+
+class TemporalStates:
+    def __init__(self, size):
+        self.size = size
+        self.head = None
+        self.tail = None
+        self.count = 0
+
+    def append(self, data):
+        new_node = Node(data)
+        if self.count < self.size:
+            if self.tail is None:
+                self.head = self.tail = new_node
+                self.head.next = self.head
+                self.head.prev = self.head
+            else:
+                new_node.prev = self.tail
+                new_node.next = self.head
+                self.tail.next = new_node
+                self.head.prev = new_node
+                self.tail = new_node
+            self.count += 1
+        else:
+            new_node.prev = self.tail
+            new_node.next = self.head.next
+            self.head.next.prev = new_node
+            self.tail.next = new_node
+            self.head = self.head.next
+            self.tail = new_node
+
+    def get_last_n_states(self, n):
+        if n > self.count:
+            n = self.count
+        current = self.tail
+        states = []
+        while n > 0:
+            states.append(current.data)
+            current = current.prev
+            n -= 1
+        return states[::-1]
+
+# Example usage
+state_list = CircularBuffer(3)
+state_list.append("State 1")
+state_list.append("State 2")
+state_list.append("State 3")
+state_list.append("State 4")  # Overwrites "State 1"
+
+print(state_list.get_last_n_states(2))  # Output: ['State 3', 'State 4']
+
+
