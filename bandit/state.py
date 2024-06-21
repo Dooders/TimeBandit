@@ -44,14 +44,30 @@ influences the object's behavior in the simulation.
 from collections import deque
 from typing import Any
 
+import torch
+
 
 class State(dict):
     """
     A state in the temporal state buffer.
     Extends dict to allow for arbitrary state data.
+
+    Parameters
+    ----------
+    state : dict
+        The state to store.
+
+    Methods
+    -------
+    encode()
+        Encodes the state to another state.
+    decode()
+        Decodes the state to another state.
+    tensor()
+        Returns the state as a tensor.
     """
 
-    def __init__(self, state: Any) -> None:
+    def __init__(self, state: dict) -> None:
         super().__init__(state)
 
     def encode(self) -> str:
@@ -60,11 +76,24 @@ class State(dict):
         """
         raise NotImplementedError("Haven't developed this yet")
 
-    def decode(self) -> Any:
+    def decode(self) -> dict:
         """
         Decodes the state to another state.
         """
         raise NotImplementedError("Haven't developed this yet")
+
+    def _flatten(self) -> list[float]:
+        """
+        Flattens the state to a list of floats.
+        """
+        return [item for sublist in self.values() for item in sublist]
+
+    def tensor(self) -> torch.Tensor:
+        """
+        Returns the state as a tensor.
+        """
+        # Take the contents of the dict and flatten to a single tensor
+        return torch.tensor(self._flatten(), dtype=torch.float32)
 
 
 class StateBuffer:
@@ -205,6 +234,7 @@ class TemporalState:
         state_buffer_size : int
             The maximum number of states to store.
         """
+        self.state_buffer_size = state_buffer_size
         self.state_buffer = StateBuffer(state_buffer_size)
         self.relative_index = 0
 
@@ -283,3 +313,54 @@ assert time_machine[1:] == ["State 3", "State 2"]
 assert time_machine[::2] == ["State 4", "State 2"]
 assert time_machine[:-2] == ["State 4"]
 assert time_machine[-2:] == ["State 3", "State 2"]
+
+
+# Tests
+def test_state():
+    state = State({"a": 1, "b": 2})
+    assert state["a"] == 1
+    assert state["b"] == 2
+
+
+def test_state_buffer():
+    state_buffer = StateBuffer(3)
+    state_buffer.append("State 1")
+    state_buffer.append("State 2")
+    state_buffer.append("State 3")
+    assert state_buffer[0] == "State 1"
+    assert state_buffer[1] == "State 2"
+    assert state_buffer[2] == "State 3"
+
+
+def test_temporal_state():
+    temporal_state = TemporalState(3)
+    temporal_state.add("State 1")
+    temporal_state.add("State 2")
+    temporal_state.add("State 3")
+    assert temporal_state[0] == "State 1"
+    assert temporal_state[1] == "State 2"
+    assert temporal_state[2] == "State 3"
+
+
+def test_temporal_state_traverse():
+    temporal_state = TemporalState(3)
+    temporal_state.add("State 1")
+    temporal_state.add("State 2")
+    temporal_state.add("State 3")
+    temporal_state.traverse_forward()
+    assert temporal_state() == "State 2"
+
+
+def test_temporal_state_tensor():
+    temporal_state = TemporalState(3)
+    temporal_state.add("State 1")
+    temporal_state.add("State 2")
+    temporal_state.add("State 3")
+    assert temporal_state.tensor() == torch.tensor([1.0, 2.0, 3.0], dtype=torch.float32)
+
+
+test_state()
+test_state_buffer()
+test_temporal_state()
+test_temporal_state_traverse()
+test_temporal_state_tensor()
