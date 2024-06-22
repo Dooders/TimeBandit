@@ -52,11 +52,6 @@ class State(dict):
     A state in the temporal state buffer.
     Extends dict to allow for arbitrary state data.
 
-    Parameters
-    ----------
-    state : dict
-        The state to store.
-
     Methods
     -------
     encode()
@@ -67,8 +62,8 @@ class State(dict):
         Returns the state as a tensor.
     """
 
-    def __init__(self, state: dict) -> None:
-        super().__init__(state)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
     def encode(self) -> str:
         """
@@ -85,8 +80,10 @@ class State(dict):
     def _flatten(self) -> list[float]:
         """
         Flattens the state to a list of floats.
+
+        #! TODO: Provide a mapping to reconstruct the state from the flattened list
         """
-        return [item for sublist in self.values() for item in sublist]
+        return [value for value in self.values()]
 
     def tensor(self) -> torch.Tensor:
         """
@@ -151,9 +148,7 @@ class StateBuffer:
         """
         Returns the state at the given index.
         """
-        if index < 0 or index >= len(self.buffer):
-            raise IndexError("Index out of range")
-        return self.buffer[index]
+        return self[index]
 
     def move_forward(self) -> "State":
         """
@@ -187,9 +182,9 @@ class StateBuffer:
         """
         # If index is an integer, return the state at the given index
         if isinstance(index, int):
-            # If index is negative, convert it to positive and start from the end
+            # If index is negative
             if index < 0:
-                index += len(self.buffer)
+                index = abs(index)
             # Check if the index is within the valid range
             if index < 0 or index >= len(self.buffer):
                 raise IndexError("Index out of range")
@@ -197,10 +192,11 @@ class StateBuffer:
             return self.buffer[-1 - index]
         # If index is a slice, return the states in the given range
         elif isinstance(index, slice):
-            # Convert the slice to a list of indices
-            start, stop, step = index.indices(len(self.buffer))
-            # Return the states at the given indices
-            return [self[i] for i in range(start, stop, step)]
+            raise NotImplementedError("Haven't implemented slicing yet")
+            # # Convert the slice to a list of indices
+            # start, stop, step = index.indices(len(self.buffer))
+            # # Return the states at the given indices
+            # return [self[i] for i in range(start, stop, step)]
         else:
             raise TypeError("Invalid argument type")
 
@@ -208,6 +204,15 @@ class StateBuffer:
 class TemporalState:
     """
     A temporal state buffer.
+
+    Attributes
+    ----------
+    state_buffer_size : int
+        The maximum number of states to store.
+    state_buffer : StateBuffer
+        The state buffer.
+    relative_index : int
+        The relative index of the current state.
 
     Methods
     -------
@@ -217,12 +222,6 @@ class TemporalState:
         Moves the current index forward by n steps.
     traverse_backward(n=1)
         Moves the current index backward by n steps.
-    __len__()
-        Returns the number of states in the buffer.
-    __getitem__(index)
-        Returns the state at the given index.
-    __call__()
-        Returns the current state.
 
     #! TODO: Finish the time traversing methods
     """
@@ -286,81 +285,3 @@ class TemporalState:
         Returns the current state.
         """
         return self.state_buffer[self.relative_index]
-
-
-# Example usage
-time_machine = TemporalState(3)
-time_machine.add("State 1")
-time_machine.add("State 2")
-time_machine.add("State 3")
-time_machine.add("State 4")
-
-print(f"Time machine[0]: {time_machine[0]}, should be State 4")
-print(f"Time machine[1]: {time_machine[1]}, should be State 3")
-print(f"Time machine[2]: {time_machine[2]}, should be State 2")
-print(f"Time machine[-1]: {time_machine[-1]}, should be State 2")
-print(f"Time machine[-2]: {time_machine[-2]}, should be State 3")
-
-
-assert time_machine[0] == "State 4"
-assert time_machine[1] == "State 3"
-assert time_machine[2] == "State 2"
-assert time_machine[-1] == "State 2"
-assert time_machine[-2] == "State 3"
-
-assert time_machine[:] == ["State 4", "State 3", "State 2"]
-assert time_machine[1:] == ["State 3", "State 2"]
-assert time_machine[::2] == ["State 4", "State 2"]
-assert time_machine[:-2] == ["State 4"]
-assert time_machine[-2:] == ["State 3", "State 2"]
-
-
-# Tests
-def test_state():
-    state = State({"a": 1, "b": 2})
-    assert state["a"] == 1
-    assert state["b"] == 2
-
-
-def test_state_buffer():
-    state_buffer = StateBuffer(3)
-    state_buffer.append("State 1")
-    state_buffer.append("State 2")
-    state_buffer.append("State 3")
-    assert state_buffer[0] == "State 1"
-    assert state_buffer[1] == "State 2"
-    assert state_buffer[2] == "State 3"
-
-
-def test_temporal_state():
-    temporal_state = TemporalState(3)
-    temporal_state.add("State 1")
-    temporal_state.add("State 2")
-    temporal_state.add("State 3")
-    assert temporal_state[0] == "State 1"
-    assert temporal_state[1] == "State 2"
-    assert temporal_state[2] == "State 3"
-
-
-def test_temporal_state_traverse():
-    temporal_state = TemporalState(3)
-    temporal_state.add("State 1")
-    temporal_state.add("State 2")
-    temporal_state.add("State 3")
-    temporal_state.traverse_forward()
-    assert temporal_state() == "State 2"
-
-
-def test_temporal_state_tensor():
-    temporal_state = TemporalState(3)
-    temporal_state.add("State 1")
-    temporal_state.add("State 2")
-    temporal_state.add("State 3")
-    assert temporal_state.tensor() == torch.tensor([1.0, 2.0, 3.0], dtype=torch.float32)
-
-
-test_state()
-test_state_buffer()
-test_temporal_state()
-test_temporal_state_traverse()
-test_temporal_state_tensor()
