@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest.mock import Mock, patch
 
@@ -35,12 +36,24 @@ class TestObject(unittest.TestCase):
         )
         self.assertEqual(self.obj.encode(), expected_encoding)
 
-    def test_id_method(self):
+    def test_id(self):
         self.assertEqual(self.obj.id(), self.obj.temporal_id)
         self.assertEqual(self.obj.id(root=True), self.obj.root_id)
 
+    def test_save(self):
+        path = self.obj.save(".")
+        self.assertTrue(os.path.exists(path))
+        os.remove(path)
+
+    def test_load(self):
+        path = self.obj.save(".")
+        obj = self.obj.load(path)
+        self.assertEqual(obj.root_id, self.obj.root_id)
+        self.assertEqual(obj.temporal_id, self.obj.temporal_id)
+        os.remove(path)
+
     def test_state_property(self):
-        state = self.obj.state
+        state = self.obj.record_state
         self.assertEqual(state["cycle"], self.obj.clock.cycle)
         self.assertEqual(state["step"], self.obj.clock.step)
         self.assertEqual(state["root_id"], self.obj.root_id)

@@ -1,32 +1,20 @@
 """
-An object is a fundamental component of TimeBandit represented as a specialized node in the 
-simulation that is updated and has a state
+An object is a fundamental component of TimeBandit represented as a specialized 
+node in the simulation that is updated and has a state
 
-The Object class is designed to contain the state of the object and its update method
-
-An object exists in a Space and is anchored to a Point in Time.
+The Object class is designed to contain the state of the object and its update 
+method, and exists in a Space and is anchored to a Point in Time.
 
 An object can be tied to other agents in the same space and can be used to model
 a variety of phenomena such as the weather, the growth of a population, the 
-traffic flow in a city, or the spread of a disease.
-
-Example
--------
-Consider a weather object that exists in a space and is anchored to a point in time.
-The weather object can be used to model the weather in a city and can be tied to other
-objects in the same space to model the weather in a city.
-
-Here is how you can create an object in code
-
-```python
-weather = Object()
-```
-
+traffic flow in a city, or the spread of a disease, etc.
 """
 
+import pickle
 import uuid
 
 from bandit.clock import Clock
+from bandit.state import State, TemporalState
 
 
 class Object:
@@ -36,13 +24,18 @@ class Object:
     Attributes
     ----------
     steps_size (int):
-        The number of steps per cycle
+        The number of steps per cycle. For example, if steps_size is 5, a cycle
+        is counted every 5 steps.
     clock (Clock):
-        The clock of the object
+        The clock of the object, contains the relative time of the object in
+        cycles and steps
     root_id (str):
         The root id of the object
     temporal_id (str):
-        The temporal id of the object
+        The temporal id of the object, contains the root_id and the clock for a
+        specific object instance
+    state (TemporalState):
+        Includes buffered previous states
 
     Methods
     -------
@@ -52,11 +45,19 @@ class Object:
         Encodes the object state
     id(root: bool = False):
         Returns the id of the object, temporal_id by default
-    state():
-        Returns the state of the object
-    cycle():
+
+    save(path: str):
+        Pickle object to file, saved to path/root_id
+    load(path: str):
+        Load object from file
+
+    Properties
+    ----------
+    record_state:
+        Returns the current state of the object
+    cycle:
         Returns the cycle of the object
-    step():
+    step:
         Returns the step of the object
     """
 
@@ -71,6 +72,7 @@ class Object:
         self.clock = Clock(steps_size)
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
+        self.state = TemporalState(100000)
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.root_id}"
@@ -91,7 +93,8 @@ class Object:
         self.clock.update()
         self.temporal_id = self.encode()
 
-        return self.state
+        #! How do I make this automatic for downstream object types?
+        self.state.add(self.record_state)
 
     def encode(self) -> str:
         """
@@ -118,33 +121,51 @@ class Object:
 
         return self.temporal_id
 
+    def save(self, path: str) -> str:
+        """
+        Pickle object to file, saved to path/root_id
+        """
+        full_path = f"{path}/{self.root_id}"
+        with open(full_path, "wb") as f:
+            pickle.dump(self, f)
+        return full_path
+
+    @classmethod
+    def load(cls, path: str) -> "Object":
+        """
+        Load object from file
+        """
+        with open(path, "rb") as f:
+            obj = pickle.load(f)
+        return obj
+
     @property
-    def state(self) -> dict:
+    def record_state(self) -> State:
         """
         Returns the state of the object
 
         Returns
         -------
-        dict:
-            The state of the object
+        State:
+            A dict-like object containing the current state of the object
         """
-        return {
-            "cycle": self.clock.cycle,
-            "step": self.clock.step,
-            "root_id": self.root_id,
-            "temporal_id": self.temporal_id,
-        }
+        return State(
+            cycle=self.clock.cycle,
+            step=self.clock.step,
+            root_id=self.root_id,
+            temporal_id=self.temporal_id,
+        )
 
     @property
     def cycle(self) -> int:
         """
-        Returns the cycle of the object
+        Returns the relative cycle of the object
         """
         return self.clock.cycle
 
     @property
     def step(self) -> int:
         """
-        Returns the step of the object
+        Returns the relative step of the object
         """
         return self.clock.step
