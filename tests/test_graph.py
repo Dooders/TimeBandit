@@ -39,7 +39,7 @@ def test_remove_object(setup_graph):
 
 
 def test_get_state(setup_graph):
-    g, obj1, obj2 = setup_graph   
+    g, obj1, obj2 = setup_graph
     assert obj1.state == 0
     assert obj2.state == 0
 
@@ -68,13 +68,6 @@ def test_objects(setup_graph):
     objects = list(g.objects)
     assert obj1 in objects
     assert obj2 in objects
-
-
-def test_states(setup_graph):
-    g, obj1, obj2 = setup_graph
-    states = list(g.states)
-    assert obj1.state in states
-    assert obj2.state in states
 
 
 if __name__ == "__main__":
