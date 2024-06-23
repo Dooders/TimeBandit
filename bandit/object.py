@@ -1,13 +1,13 @@
 """
-An object is a fundamental component of TimeBandit represented as a specialized 
-node in the simulation that is updated and has a state
+An object is a core element of TimeBandit, functioning as a specialized node 
+within the simulation that maintains and updates its state.
 
-The Object class is designed to contain the state of the object and its update 
-method, and exists in a Space and is anchored to a Point in Time.
+The Object class is designed to encapsulate the object's state and its update 
+method, existing within a defined Space and anchored at a specific Point in Time.
 
-An object can be tied to other agents in the same space and can be used to model
-a variety of phenomena such as the weather, the growth of a population, the 
-traffic flow in a city, or the spread of a disease, etc.
+Objects can be interconnected with other agents within the same space, allowing 
+them to model a wide range of phenomena, such as weather patterns, population 
+growth, city traffic flow, and the spread of diseases, among others.
 """
 
 import pickle
