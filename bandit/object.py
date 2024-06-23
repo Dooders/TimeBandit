@@ -8,6 +8,12 @@ method, existing within a defined Space and anchored at a specific Point in Time
 Objects can be interconnected with other agents within the same space, allowing 
 them to model a wide range of phenomena, such as weather patterns, population 
 growth, city traffic flow, and the spread of diseases, among others.
+
+TODO
+----
+- Investigate more efficient data structures or techniques for state 
+    management could be worthwhile, especially for simulations with a large 
+    number of objects or states.
 """
 
 import pickle
@@ -18,7 +24,7 @@ from bandit.clock import Clock
 from bandit.state import State, TemporalState
 
 
-class Object(ABC):
+class Object:
     """
     A class to represent an object in a simulation.
 
@@ -79,6 +85,7 @@ class Object(ABC):
         """
         self.steps_size = steps_size
         self.clock = Clock(steps_size)
+        #! TODO: ID class for better handling of IDs
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
         self.state = TemporalState(100000)
@@ -88,7 +95,7 @@ class Object(ABC):
         """
         Updates the object state and returns the state after the update.
         """
-        pass
+        raise NotImplementedError("Subclass must implement _update method")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.root_id}"
@@ -142,19 +149,29 @@ class Object(ABC):
         """
         Pickle object to file, saved to path/root_id
         """
-        full_path = f"{path}/{self.root_id}"
-        with open(full_path, "wb") as f:
-            pickle.dump(self, f)
-        return full_path
+        try:
+            full_path = f"{path}/{self.root_id}"
+            with open(full_path, "wb") as f:
+                pickle.dump(self, f)
+            return full_path
+        except Exception as e:
+            # Handle exceptions and log errors
+            print(f"Failed to save object: {e}")
+            return ""
 
     @classmethod
     def load(cls, path: str) -> "Object":
         """
         Load object from file
         """
-        with open(path, "rb") as f:
-            obj = pickle.load(f)
-        return obj
+        try:
+            with open(path, "rb") as f:
+                obj = pickle.load(f)
+            return obj
+        except Exception as e:
+            # Handle exceptions and log errors
+            print(f"Failed to load object: {e}")
+            return ""
 
     @property
     def _record_state(self) -> State:
