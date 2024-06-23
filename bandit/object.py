@@ -12,14 +12,21 @@ traffic flow in a city, or the spread of a disease, etc.
 
 import pickle
 import uuid
+from abc import ABC, abstractmethod
 
 from bandit.clock import Clock
 from bandit.state import State, TemporalState
 
 
-class Object:
+class Object(ABC):
     """
-    A class to represent an object in a simulation
+    A class to represent an object in a simulation.
+
+    Any child class of Object must implement the _update method which contains
+    the custom update logic for that object.
+
+    During the primary update process, the object will automatically update the
+    clock and the temporal_id.
 
     Attributes
     ----------
@@ -39,25 +46,27 @@ class Object:
 
     Methods
     -------
-    update():
-        Updates the object state
-    encode():
+    _update():
+        Custom update method
+    update() -> State:
+        Updates the object state and returns the state after the update.
+    encode() -> str:
         Encodes the object state
-    id(root: bool = False):
+    id(root: bool = False) -> str:
         Returns the id of the object, temporal_id by default
 
-    save(path: str):
+    save(path: str) -> str:
         Pickle object to file, saved to path/root_id
-    load(path: str):
+    load(path: str) -> "Object":
         Load object from file
 
     Properties
     ----------
-    record_state:
+    _record_state : State
         Returns the current state of the object
-    cycle:
+    cycle: int
         Returns the cycle of the object
-    step:
+    step: int
         Returns the step of the object
     """
 
@@ -73,6 +82,13 @@ class Object:
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
         self.state = TemporalState(100000)
+
+    @abstractmethod
+    def _update(self) -> dict:
+        """
+        Updates the object state and returns the state after the update.
+        """
+        pass
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.root_id}"
@@ -91,11 +107,11 @@ class Object:
         dict:
             The state of the object
         """
-
+        self._update()
         self.clock.update()
         self.temporal_id = self.encode()
 
-        return self.record_state
+        return self._record_state
 
     def encode(self) -> str:
         """
@@ -141,7 +157,7 @@ class Object:
         return obj
 
     @property
-    def record_state(self) -> State:
+    def _record_state(self) -> State:
         """
         Returns the state of the object.
 
