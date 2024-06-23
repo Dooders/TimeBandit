@@ -63,6 +63,18 @@ class Clock:
         """
         return Clock(self.steps_per_cycle, self.starting_time)
 
+    def __str__(self) -> str:
+        """
+        Returns the current time in the format of "{cycle}:{step}".
+        """
+        return f"{self._cycle}:{self._step}"
+
+    def __repr__(self) -> str:
+        """
+        Returns the current time in the format of "{cycle}:{step}".
+        """
+        return f"{self._cycle}:{self._step}"
+
     @property
     def time(self) -> float:
         """
