@@ -82,7 +82,9 @@ class Object:
 
     def update(self) -> dict:
         """
-        Updates the object state
+        Updates the object state and returns the state after the update.
+
+        Updates the clock and the temporal_id.
 
         Returns
         -------
@@ -93,8 +95,7 @@ class Object:
         self.clock.update()
         self.temporal_id = self.encode()
 
-        #! How do I make this automatic for downstream object types?
-        self.state.add(self.record_state)
+        return self.record_state
 
     def encode(self) -> str:
         """
@@ -142,19 +143,24 @@ class Object:
     @property
     def record_state(self) -> State:
         """
-        Returns the state of the object
+        Returns the state of the object.
+
+        Automatically adding it to the state_buffer in the process.
 
         Returns
         -------
         State:
             A dict-like object containing the current state of the object
         """
-        return State(
+        object_state = State(
             cycle=self.clock.cycle,
             step=self.clock.step,
             root_id=self.root_id,
             temporal_id=self.temporal_id,
         )
+        self.state.add(object_state)
+
+        return object_state
 
     @property
     def cycle(self) -> int:
