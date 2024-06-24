@@ -1,48 +1,54 @@
 """
-A temporal state buffer for storing states in a temporal sense.
-The buffer is a deque with a maxlen.
-The current_index is the index of the current state.
+A state management system for TimeBandit.
+
+Using objects to encapsulate state and behavior, each entity in the simulation 
+is represented by an object. This allows for easy state management and 
+manipulation.
+
+A TemporalState stores an object's State in a temporal sense, through StateBuffer.
+The StateBuffer is a deque with a maxlen where the current_index is the index of 
+the current state.
+
+Allows for:
+- State saving and restoration.
+- State compression and decompression.
+- State storage and retrieval.
+- State traversal through the temporal state buffer.
+- Objects with varying state buffer sizes and functionality
 
 
-FUTURE PLANS
-
-Encode and Decode Object State through an auto-encoder
-
-Encoding allows compression of the object state into a lower dimensional 
-representation that can recombine with genetic algorithms.
-
-The idea is to get the minimal amount of information needed to reinstate the 
-object state within a range of error, which serves as a mutation mechanism if 
-using evolutionary algorithms.
-
-The object state is everything needed to reinstate the object, which includes
-the root id, temporal id, cycle, step, and steps per cycle.
-
-The object state also contains the model parameters of the object, which is what 
-influences the object's behavior in the simulation.
+NOTES
+-----
+- I've gone with an object oriented state management system. Using objects to 
+    encapsulate state and behavior. Each entity in the simulation is represented 
+    by an object. This allows for easy state management and manipulation.
+    It also allows for easy state restoration. It also allows for easy state 
+    compression and decompression. It also allows for easy state storage and 
+    retrieval.
 
 
-# To Do
-- Implement the encode and decode methods in the ObjectState class
-- Implement the encode_self method in the Object class
-- Condense an object state into a single string, and then decode it back to the 
-    original state
-- This will give the ability to store the state of an object in a database and 
-    easily reinstate it
-
-#! Maybe an evolutionary approach to an auto-encoder that slowly compresses the 
-#!   encoding more and more, as long as the decoding output is correct
-#! Will hopefully need less and less context/information to reinstate the object 
-#!   from the encoded data
-
-
-#! state method that turns the state into a tensor, combine that with space input state tensor, to input into the object update method for "updating"
-#! update method must log the update_time attribute of the object
-#! so all requests to update come through the State class and it controls the update process of the object(s)
+TODO
+----
+- Implement the encode and decode methods in the ObjectState class. Would need
+    to encode the object state into a single string, and then decode it back to 
+    original state. This will give the ability to store the state of an object 
+    in a database and easily reinstate it
+- Experiment with an auto-encoder to compress the object state into a lower 
+    dimensional representation that can recombine with genetic algorithms. 
+    Then use the decoder to decompress the state back into the original state. 
+    The idea is to get the minimal amount of information needed to reinstate the 
+    object state within a range of error, which serves as a mutation mechanism if 
+    using evolutionary algorithms.
+- Maybe an evolutionary approach to an auto-encoder that slowly compresses the 
+    encoding more and more, as long as the decoding output is correct. Will 
+    hopefully need less and less context/information to reinstate the object 
+    from the encoded data. Starts with the least compressions, so how far it 
+    can get and be accurate, then increase the compression and do the same, until 
+    it no longer worth it to keep going
+- Hybrid state management system blending object-oriented with ECS.
 """
 
 from collections import deque
-from typing import Any
 
 import torch
 
@@ -60,6 +66,10 @@ class State(dict):
         Decodes the state to another state.
     tensor()
         Returns the state as a tensor.
+
+    TODO
+    ----
+    - Provide a mapping as part of the _flatten method to reconstruct the state
     """
 
     def __init__(self, *args, **kwargs) -> None:
@@ -80,8 +90,6 @@ class State(dict):
     def _flatten(self) -> list[float]:
         """
         Flattens the state to a list of floats.
-
-        #! TODO: Provide a mapping to reconstruct the state from the flattened list
         """
         return [value for value in self.values()]
 
@@ -116,6 +124,11 @@ class StateBuffer:
         Moves the current index forward by n steps.
     move_backward(n=1)
         Moves the current index backward by n steps.
+
+    TODO
+    ----
+    - Implement slicing
+    - Make sure indexing works as wanted
     """
 
     def __init__(self, size: int) -> None:
@@ -193,6 +206,7 @@ class StateBuffer:
         # If index is a slice, return the states in the given range
         elif isinstance(index, slice):
             raise NotImplementedError("Haven't implemented slicing yet")
+            #! Highlighted out for now
             # # Convert the slice to a list of indices
             # start, stop, step = index.indices(len(self.buffer))
             # # Return the states at the given indices
@@ -223,7 +237,9 @@ class TemporalState:
     traverse_backward(n=1)
         Moves the current index backward by n steps.
 
-    #! TODO: Finish the time traversing methods
+    TODO
+    ----
+    - Finish the time traversing process
     """
 
     def __init__(self, state_buffer_size: int) -> None:
