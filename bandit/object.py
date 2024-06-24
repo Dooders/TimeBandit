@@ -14,11 +14,12 @@ TODO
 - Investigate more efficient data structures or techniques for state 
     management could be worthwhile, especially for simulations with a large 
     number of objects or states.
+- ID class for better handling of IDs.
 """
 
 import pickle
 import uuid
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from bandit.clock import Clock
 from bandit.state import State, TemporalState
@@ -60,7 +61,8 @@ class Object:
         Encodes the object state
     id(root: bool = False) -> str:
         Returns the id of the object, temporal_id by default
-
+    _record_state() -> State:
+        Returns the current state of the object
     save(path: str) -> str:
         Pickle object to file, saved to path/root_id
     load(path: str) -> "Object":
@@ -68,8 +70,6 @@ class Object:
 
     Properties
     ----------
-    _record_state : State
-        Returns the current state of the object
     cycle: int
         Returns the cycle of the object
     step: int
@@ -85,7 +85,6 @@ class Object:
         """
         self.steps_size = steps_size
         self.clock = Clock(steps_size)
-        #! TODO: ID class for better handling of IDs
         self.root_id = uuid.uuid4().hex
         self.temporal_id = self.encode()
         self.state = TemporalState(100000)
@@ -118,7 +117,7 @@ class Object:
         self.clock.update()
         self.temporal_id = self.encode()
 
-        return self._record_state
+        return self._record_state()
 
     def encode(self) -> str:
         """
@@ -173,7 +172,6 @@ class Object:
             print(f"Failed to load object: {e}")
             return ""
 
-    @property
     def _record_state(self) -> State:
         """
         Returns the state of the object.
