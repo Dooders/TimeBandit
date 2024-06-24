@@ -6,10 +6,22 @@ from bandit.clock import Clock
 from bandit.object import Object
 
 
+class TestObject(Object):
+    """
+    A test object for testing the Object class
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def _update(self):
+        pass
+
+
 class TestObject(unittest.TestCase):
 
     def setUp(self):
-        self.obj = Object()
+        self.obj = TestObject()
 
     def test_initialization(self):
         self.assertEqual(self.obj.steps_size, 1)

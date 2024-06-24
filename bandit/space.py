@@ -1,6 +1,5 @@
 """
 The Space module is designed to represent the space of objects in the simulation.
-It is a subclass of the Graph class.
 
 It functions as a directed graph where the edges between objects represent the
 Relationships or Interactions between them.
@@ -16,14 +15,15 @@ Example
 Consider a space of objects in a room. The objects are the nodes and the edges
 represent the relationships between them.
 
-Here is how you can represent the space of objects in the room:
-
-This example demonstrates how to create a space of objects in a room and represent their relationships as edges in a graph.
+This example demonstrates how to create a space of objects in a "room" and represent 
+their relationships as edges in a graph.
 
 1. Create instances of objects that represent items in the room.
 2. Add these objects as nodes to the Space graph.
-3. Define relationships (edges) between these objects to represent their interactions or spatial relations.
-4. Utilize the Space graph to analyze or visualize the relationships and interactions between objects.
+3. Define relationships (edges) between these objects to represent their 
+    interactions or spatial relations.
+4. Utilize the Space graph to analyze or visualize the relationships and 
+    interactions between objects.
 
     # Create a space
     room_space = Space()
@@ -44,24 +44,28 @@ This example demonstrates how to create a space of objects in a room and represe
 
     # Visualize the objects and relationships
     room_space.draw()
+    
+TODO
+----
+- Build out Relationship and Interaction edges
+- Add methods to Space for getting the state of the space
+- Loading a Space from a SpaceState
+- Tests
 """
 
 from typing import TYPE_CHECKING
 
 from bandit.graph import Graph
+from bandit.state import State
 
 if TYPE_CHECKING:
     from bandit.object import Object
 
-#! TODO: SpaceState class
-#! TODO: Build out Relationship and Interaction edges
-#! TODO: Space from SpaceState
-#! TODO: Tests
-
 
 class Space(Graph):
     """
-    Space class is a directed graph that represents the space of objects.
+    Space class is a directed graph that represents the space of objects (nodes).
+
     It is a subclass of networkx.DiGraph.
 
     Methods
@@ -121,6 +125,20 @@ class Space(Graph):
         self.remove_edge(object1, object2)
 
     @property
+    def relationships(self) -> list[tuple[str, str, str]]:
+        """
+        Return a list of relationships in the space.
+        """
+        return [(u, v, d["relationship"]) for u, v, d in self.edges.data()]
+
+    @property
+    def interactions(self) -> list[tuple[str, str, str]]:
+        """
+        Return a list of interactions in the space.
+        """
+        return [(u, v, d["interaction"]) for u, v, d in self.edges.data()]
+
+    @property
     def object_count(self) -> int:
         """
         Return the number of objects in the space.
@@ -128,11 +146,13 @@ class Space(Graph):
         return len(self.nodes)
 
     @property
-    def state(self) -> dict:
+    def state(self) -> State:
         """
         Return the state of the space and the state of the objects in the space
         """
-        return {
-            "object_count": self.object_count,
-            "objects": {node: node.state for node in self.objects},
-        }
+        return State(
+            {
+                "object_count": self.object_count,
+                "objects": {node: node.state for node in self.objects},
+            }
+        )

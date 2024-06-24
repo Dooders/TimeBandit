@@ -1,3 +1,22 @@
+"""
+Graph class is a abstract class that represents a graph.
+
+It is a subclass of networkx.DiGraph.
+
+A graph is a collection of nodes and edges. The nodes are the objects in the graph
+and the edges are the relationships between the objects.
+
+It is intended to be subclassed by concrete implementations of graphs. Like
+the Space class and the Time class.
+    
+TODO
+----
+- Better state management to auto use parent state details so dont have to 
+    define with every child
+- Decide if Space should inherit from Object
+"""
+
+from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 import networkx as nx
