@@ -10,6 +10,11 @@ class Clock:
     update()
         Steps the clock by 1 step.
         Updates the object's step and cycle properties.
+    reset()
+        Resets the clock to the starting time.
+    clone()
+        Returns a clone of the clock with the same steps_per_cycle and current
+        time in the simulation
 
     Properties
     -----------
@@ -21,21 +26,23 @@ class Clock:
         The current time in the format of "{cycle}:{step}".
     real_time
         The real time since the clock was started.
+
+    TODO
+    ----
+    - Improve clone() logic
     """
 
-    def __init__(self, steps_per_cycle: int, starting_time: str = "1.0") -> None:
+    def __init__(self, steps_per_cycle: int = 10) -> None:
         """
         Initializes the clock.
 
         Parameters
         ----------
         steps_per_cycle
-            The number of steps per cycle.
-        starting_time
-            The starting time in the format of "{cycle}:{step}".
+            The number of steps per cycle. For example, 10 steps per cycle would
+            be 1:0, 1:1, 1:2, ..., 1:9, 2:0, 2:1, ...
         """
         self.steps_per_cycle = steps_per_cycle
-        self.starting_time = starting_time
         self._cycle = 1
         self._step = 0
         self._start_time = time.time()
@@ -50,8 +57,6 @@ class Clock:
             self._cycle += 1
             self._step = 0
 
-        return self._cycle, self._step
-
     def clone(self) -> "Clock":
         """
         Returns a clone of the clock with the same steps_per_cycle and current time in the simulation
@@ -61,7 +66,18 @@ class Clock:
         Clock
             A clone of the clock with the same steps_per_cycle and current time in the simulation
         """
-        return Clock(self.steps_per_cycle, self.starting_time)
+        clock = Clock(self.steps_per_cycle)
+        clock._cycle = self._cycle
+        clock._step = self._step
+        clock._start_time = self._start_time
+        return clock
+
+    def reset(self) -> None:
+        """
+        Resets the clock to the starting time.
+        """
+        self._cycle = 1
+        self._step = 0
 
     def __str__(self) -> str:
         """
