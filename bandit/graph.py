@@ -1,6 +1,26 @@
+"""
+Graph class is a abstract class that represents a graph.
+
+It is a subclass of networkx.DiGraph.
+
+A graph is a collection of nodes and edges. The nodes are the objects in the graph
+and the edges are the relationships between the objects.
+
+It is intended to be subclassed by concrete implementations of graphs. Like
+the Space class and the Time class.
+    
+TODO
+----
+- Better state management to auto use parent state details so dont have to 
+    define with every child
+"""
+
+from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 import networkx as nx
+
+from bandit.state import TemporalState
 
 if TYPE_CHECKING:
     from bandit.object import Object
@@ -9,6 +29,7 @@ if TYPE_CHECKING:
 class Graph(nx.DiGraph):
     """
     Graph class is a abstract class that represents a graph.
+
     It is a subclass of networkx.DiGraph.
 
     It is intended to be subclassed by concrete implementations of graphs. Like
@@ -32,8 +53,11 @@ class Graph(nx.DiGraph):
         Returns the state of the graph
     """
 
+    #! Should Space just inherit from Object?
     def __init__(self) -> None:
         super().__init__()
+        self.object_states = {}
+        self.state = TemporalState()
 
     def add_object(self, object) -> None:
         """
@@ -73,14 +97,18 @@ class Graph(nx.DiGraph):
         """
         return self.nodes[object_id]["object"]
 
+    @abstractmethod
+    def _update(self) -> None:
+        """
+        Updates the object state
+        """
+        raise NotImplementedError("Subclass must implement _update")
+
     def update(self) -> dict:
         """
         Updates the object state
 
-        #! Need to work out inputs and outputs
-        #! Need a better counter that different classes can use
-
-        - Iter through every node in the space
+        - Iter through every object
         - Update the object
         - Return the state of the object
         - Insert into temporal graph
@@ -88,8 +116,10 @@ class Graph(nx.DiGraph):
         - Finalize update
         - Return the state of the object
         """
+        self.object_states = {}
         for object in self.objects:
-            object.update()
+            # Update every object in the graph
+            self.object_states[object.root_id] = object.update()
 
         return self.state
 
@@ -112,4 +142,7 @@ class Graph(nx.DiGraph):
         """
         Returns the state of the graph
         """
-        return {object.root_id: object.state for object in self.objects}
+        return {
+            "object_count": len(self.object_states),
+            "object_states": self.object_states,
+        }
