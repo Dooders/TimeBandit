@@ -162,8 +162,8 @@ class Time(Graph):
 
         # Add current object states to the time graph
         for object in space_state["objects"].values():
-            temporal_id = object.get("temporal_id", 0)
-            root_id = object.get("root_id", None)
+            temporal_id = object.get("temporal_id", "")
+            root_id = object.get("root_id", "")
             self.add_node(temporal_id, **object)
             new_temporal_cache[root_id] = temporal_id
 
@@ -180,7 +180,7 @@ class Time(Graph):
         Returns the threads in the time
         """
         return self.edges(data=True)
-    
+
     def spaces(self) -> list:
         """
         Returns the spaces in the time
