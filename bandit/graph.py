@@ -13,15 +13,17 @@ TODO
 ----
 - Better state management to auto use parent state details so dont have to 
     define with every child
-- Decide if Space should inherit from Object
+- Investigate if class should inherit from Object that way it has a state, 
+    clock, _update, etc
+- Investigate if class should also be a Graph Neural Network
 """
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator
 
 import networkx as nx
 
-from bandit.state import TemporalState
+from bandit.state import State
 
 if TYPE_CHECKING:
     from bandit.object import Object
@@ -44,21 +46,22 @@ class Graph(nx.DiGraph):
         Removes an object from the space
     get_object(object_id):
         Returns the object
-    draw_space():
-        Draws the space
     update(input):
         Updates the object state
     draw():
         Draws the graph
-    state():
-        Returns the state of the graph
+
+    Properties
+    ----------
+    objects: Generator["Object", None, None]
+        Returns a generator of objects in the graph
+    state: dict
+        Returns the current state of the graph
     """
 
-    #! Should Space just inherit from Object?
     def __init__(self) -> None:
         super().__init__()
         self.object_states = {}
-        self.state = TemporalState()
 
     def add_object(self, object) -> None:
         """
@@ -102,6 +105,7 @@ class Graph(nx.DiGraph):
     def _update(self) -> None:
         """
         Updates the object state
+
         """
         raise NotImplementedError("Subclass must implement _update")
 
@@ -109,13 +113,13 @@ class Graph(nx.DiGraph):
         """
         Updates the object state
 
-        - Iter through every object
-        - Update the object
-        - Return the state of the object
-        - Insert into temporal graph
-        - Connect the threads between current state and previous state
-        - Finalize update
-        - Return the state of the object
+        Iterates through every object in the graph and updates their state.
+
+        Returns the state of the graph.
+
+        TODO
+        ----
+        - Optimize this process
         """
         self.object_states = {}
         for object in self.objects:
@@ -131,7 +135,7 @@ class Graph(nx.DiGraph):
         nx.draw(self, with_labels=True, font_weight="bold")
 
     @property
-    def objects(self) -> dict:
+    def objects(self) -> Generator["Object", None, None]:
         """
         Returns the objects in the graph
         """
@@ -139,11 +143,13 @@ class Graph(nx.DiGraph):
             yield self.nodes[node]["object"]
 
     @property
-    def state(self) -> dict:
+    def state(self) -> "State":
         """
         Returns the state of the graph
         """
-        return {
-            "object_count": len(self.object_states),
-            "object_states": self.object_states,
-        }
+        return State(
+            {
+                "object_count": len(self.object_states),
+                "object_states": self.object_states,
+            }
+        )
