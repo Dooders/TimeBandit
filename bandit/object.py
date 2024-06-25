@@ -14,15 +14,15 @@ TODO
 - Investigate more efficient data structures or techniques for state 
     management could be worthwhile, especially for simulations with a large 
     number of objects or states.
-- ID class for better handling of IDs.
+- Finalize update() logic order
 """
 
 import pickle
-import uuid
 from abc import abstractmethod
 
 from bandit.clock import Clock
-from bandit.state import State, TemporalState
+from bandit.identity import Identity
+from bandit.state import TemporalState
 
 
 class Object:
@@ -43,11 +43,8 @@ class Object:
     clock (Clock):
         The clock of the object, contains the relative time of the object in
         cycles and steps
-    root_id (str):
-        The root id of the object
-    temporal_id (str):
-        The temporal id of the object, contains the root_id and the clock for a
-        specific object instance
+    id (Identity):
+        The identity of the object including root and temporal IDs
     state (TemporalState):
         Includes buffered previous states
 
@@ -57,10 +54,6 @@ class Object:
         Custom update method
     update() -> State:
         Updates the object state and returns the state after the update.
-    encode() -> str:
-        Encodes the object state
-    id(root: bool = False) -> str:
-        Returns the id of the object, temporal_id by default
     _record_state() -> State:
         Returns the current state of the object
     save(path: str) -> str:
@@ -85,10 +78,8 @@ class Object:
         """
         self.steps_size = steps_size
         self.clock = Clock(steps_size)
-        #! TODO: ID class for better handling of IDs
-        self.root_id = uuid.uuid4().hex
-        self.temporal_id = self.encode()
-        self.state = TemporalState(100000)
+        self.id = Identity()
+        self.state = TemporalState()
 
     @abstractmethod
     def _update(self) -> dict:
@@ -98,10 +89,10 @@ class Object:
         raise NotImplementedError("Subclass must implement _update method")
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}:{self.root_id}"
+        return f"{self.__class__.__name__}:{self.id.root}"
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}:{self.root_id}"
+        return f"{self.__class__.__name__}:{self.id.root}"
 
     def update(self) -> dict:
         """
@@ -116,41 +107,16 @@ class Object:
         """
         self._update()
         self.clock.update()
-        self.temporal_id = self.encode()
+        self.id.update(self.clock)
 
-        return self._record_state()
-
-    def encode(self) -> str:
-        """
-        Encodes the object state
-        """
-        return f"{self.root_id}.{self.clock.cycle}.{self.clock.step}"
-
-    def id(self, root: bool = False) -> str:
-        """
-        Returns the id of the object
-
-        Parameters
-        ----------
-        root (bool):
-            Whether to return the root id or the temporal id
-
-        Returns
-        -------
-        str:
-            The id of the object
-        """
-        if root:
-            return self.root_id
-
-        return self.temporal_id
+        return self.state.update()
 
     def save(self, path: str) -> str:
         """
         Pickle object to file, saved to path/root_id
         """
         try:
-            full_path = f"{path}/{self.root_id}"
+            full_path = f"{path}/{self.id.root}"
             with open(full_path, "wb") as f:
                 pickle.dump(self, f)
             return full_path
@@ -172,27 +138,6 @@ class Object:
             # Handle exceptions and log errors
             print(f"Failed to load object: {e}")
             return ""
-
-    def _record_state(self) -> State:
-        """
-        Returns the state of the object.
-
-        Automatically adding it to the state_buffer in the process.
-
-        Returns
-        -------
-        State:
-            A dict-like object containing the current state of the object
-        """
-        object_state = State(
-            cycle=self.clock.cycle,
-            step=self.clock.step,
-            root_id=self.root_id,
-            temporal_id=self.temporal_id,
-        )
-        self.state.add(object_state)
-
-        return object_state
 
     @property
     def cycle(self) -> int:
