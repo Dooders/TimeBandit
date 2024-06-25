@@ -49,8 +49,12 @@ TODO
 """
 
 from collections import deque
+from typing import TYPE_CHECKING
 
 import torch
+
+if TYPE_CHECKING:
+    from bandit.object import Object
 
 
 class State(dict):
@@ -128,7 +132,7 @@ class StateBuffer:
     TODO
     ----
     - Implement slicing
-    - Make sure indexing works as wanted
+    - Make sure indexing works as expected
     """
 
     def __init__(self, size: int) -> None:
@@ -206,7 +210,7 @@ class StateBuffer:
         # If index is a slice, return the states in the given range
         elif isinstance(index, slice):
             raise NotImplementedError("Haven't implemented slicing yet")
-            #! Highlighted out for now
+            #! Highlighted out until implemented
             # # Convert the slice to a list of indices
             # start, stop, step = index.indices(len(self.buffer))
             # # Return the states at the given indices
@@ -242,7 +246,7 @@ class TemporalState:
     - Finish the time traversing process
     """
 
-    def __init__(self, state_buffer_size: int) -> None:
+    def __init__(self, state_buffer_size: int = 1000) -> None:
         """
         Parameters
         ----------
@@ -253,11 +257,25 @@ class TemporalState:
         self.state_buffer = StateBuffer(state_buffer_size)
         self.relative_index = 0
 
-    def add(self, state: "State") -> None:
+    def _add(self, state: "State") -> None:
         """
         Appends a state to the buffer.
         """
         self.state_buffer.append(state)
+
+    def update(self, object: "Object") -> "State":
+        """
+        Updates the State.
+        """
+        object_state = State(
+            cycle=object.clock.cycle,
+            tep=object.clock.step,
+            root_id=object.id.root,
+            temporal_id=object.id.temporal,
+        )
+        self._add(object_state)
+
+        return object_state
 
     def traverse_forward(self, n: int = 1) -> "State":
         """
@@ -278,6 +296,11 @@ class TemporalState:
     def _check_index(self) -> bool:
         """
         Checks if the current index is within the valid range.
+
+        Returns
+        -------
+        bool
+            Whether the index is within the valid range.
         """
         if self.relative_index < 0 or self.relative_index >= len(self.state_buffer):
             raise IndexError("Index out of range")
@@ -293,7 +316,6 @@ class TemporalState:
         """
         Returns the state at the given index.
         """
-        # ? Should this be relative to the current index?
         return self.state_buffer[index]
 
     def __call__(self) -> "State":

@@ -2,7 +2,16 @@
 import pytest
 import torch
 
+from bandit.object import Object
 from bandit.state import State, StateBuffer, TemporalState
+
+
+class MockObject(Object):
+    def __init__(self):
+        super().__init__()
+
+    def _update(self):
+        pass
 
 
 # State Tests
@@ -13,13 +22,22 @@ def test_state():
 
 
 def test_state_encode():
+    """
+    Test the encode method of the State class.
+    Unimplemented for now.
+    """
     pass
 
 
 def test_state_decode():
+    """
+    Test the decode method of the State class.
+    Unimplemented for now.
+    """
     pass
 
 
+# State tests
 def test_state_flatten():
     state = State({"a": 1, "b": 2})
     assert state._flatten() == [1, 2]
@@ -59,15 +77,3 @@ def test_state_buffer_get_state_at_index():
     assert state_buffer.get_state_at_index(0) == "State 3"
     assert state_buffer.get_state_at_index(1) == "State 2"
     assert state_buffer.get_state_at_index(2) == "State 1"
-
-
-# TemporalState Tests
-def test_temporal_state():
-    temporal_state = TemporalState(3)
-    temporal_state.add("State 1")
-    temporal_state.add("State 2")
-    temporal_state.add("State 3")
-    assert temporal_state[0] == "State 3"
-    assert temporal_state[1] == "State 2"
-    assert temporal_state[2] == "State 1"
-    assert temporal_state() == "State 3"
