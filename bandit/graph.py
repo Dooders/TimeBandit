@@ -72,7 +72,7 @@ class Graph(nx.DiGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object.root_id, object=object)
+        self.add_node(object.id.root, object=object)
 
     def remove_object(self, object) -> None:
         """
@@ -124,7 +124,7 @@ class Graph(nx.DiGraph):
         self.object_states = {}
         for object in self.objects:
             # Update every object in the graph
-            self.object_states[object.root_id] = object.update()
+            self.object_states[object.id.root] = object.update()
 
         return self.state
 

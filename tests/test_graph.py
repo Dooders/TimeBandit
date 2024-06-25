@@ -7,12 +7,11 @@ from bandit.graph import Graph
 
 
 class MockObject:
-    def __init__(self, root_id, state):
-        self.root_id = root_id
-        self.state = state
+    def __init__(self):
+        super().__init__()
 
-    def update(self):
-        self.state += 1
+    def _update(self):
+        pass
 
 
 @pytest.fixture
@@ -27,15 +26,15 @@ def setup_graph():
 
 def test_add_object(setup_graph):
     g, obj1, obj2 = setup_graph
-    assert g.has_node(obj1.root_id)
-    assert g.has_node(obj2.root_id)
+    assert g.has_node(obj1.id.root)
+    assert g.has_node(obj2.id.root)
 
 
 def test_remove_object(setup_graph):
     g, obj1, obj2 = setup_graph
-    g.remove_object(obj1.root_id)
-    assert not g.has_node(obj1.root_id)
-    assert g.has_node(obj2.root_id)
+    g.remove_object(obj1.id.root)
+    assert not g.has_node(obj1.id.root)
+    assert g.has_node(obj2.id.root)
 
 
 def test_get_state(setup_graph):
@@ -46,7 +45,7 @@ def test_get_state(setup_graph):
 
 def test_get_object(setup_graph):
     g, obj1, _ = setup_graph  # Replace obj2 with _
-    obj = g.get_object(obj1.root_id)
+    obj = g.get_object(obj1.id.root)
     assert obj.state == obj1.state
 
 
