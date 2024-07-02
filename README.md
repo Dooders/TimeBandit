@@ -4,7 +4,7 @@
 
 > Explore time and space like TimeBandits
 
-TimeBandit is an object-oriented simulation framework in Python.
+An object-oriented simulation framework in Python.
 
 ## Core Features
 
