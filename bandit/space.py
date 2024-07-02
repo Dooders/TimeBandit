@@ -4,6 +4,10 @@ The Space module is designed to represent the space of objects in the simulation
 It functions as a directed graph where the edges between objects represent the
 Relationships or Interactions between them.
 
+In this design, space is modeled not just as a physical or geometric concept, but as an abstract 
+network of connections and influences, where the presence and nature of edges convey the dynamic 
+and complex nature of object interactions.
+
 Relationships are specialized types of edges that represent the relationships between
 objects in the space.
 
