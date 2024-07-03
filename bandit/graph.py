@@ -4,7 +4,7 @@ Graph class is a abstract class that represents a graph.
 It is a subclass of networkx.DiGraph.
 
 A graph is a collection of nodes and edges. The nodes are the objects in the graph
-and the edges are the relationships between the objects.
+and the edges are the connections between the objects.
 
 It is intended to be subclassed by concrete implementations of graphs. Like
 the Space class and the Time class.
@@ -21,7 +21,7 @@ TODO
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Generator
 
-import networkx as nx
+from anarchy import AnarchyGraph
 
 from bandit.state import State
 
@@ -29,11 +29,11 @@ if TYPE_CHECKING:
     from bandit.object import Object
 
 
-class Graph(nx.DiGraph):
+class Graph(AnarchyGraph):
     """
     Graph class is a abstract class that represents a graph.
 
-    It is a subclass of networkx.DiGraph.
+    It is a subclass of AnarchyGraph.
 
     It is intended to be subclassed by concrete implementations of graphs. Like
     the Space class and the Time class.
@@ -63,7 +63,7 @@ class Graph(nx.DiGraph):
         super().__init__()
         self.object_states = {}
 
-    def add_object(self, object) -> None:
+    def add_object(self, object, **kwargs) -> None:
         """
         Adds an object to the space
 
@@ -72,7 +72,7 @@ class Graph(nx.DiGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object.id.root, object=object)
+        self.add_node(object.id.root, object=object, **kwargs)
 
     def remove_object(self, object) -> None:
         """
@@ -99,7 +99,7 @@ class Graph(nx.DiGraph):
         Object:
             The object
         """
-        return self.nodes[object_id]["object"]
+        return self.get_node(object_id)["object"]
 
     @abstractmethod
     def _update(self) -> None:
@@ -128,19 +128,13 @@ class Graph(nx.DiGraph):
 
         return self.state
 
-    def draw(self) -> None:
-        """
-        Draws the graph
-        """
-        nx.draw(self, with_labels=True, font_weight="bold")
-
     @property
     def objects(self) -> Generator["Object", None, None]:
         """
         Returns the objects in the graph
         """
         for node in self.nodes():
-            yield self.nodes[node]["object"]
+            yield self.get_node(node)["object"]
 
     @property
     def state(self) -> "State":

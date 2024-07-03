@@ -1,11 +1,11 @@
 # Temporal Graph Engine
 
-A temporal graph engine is a specialized software system designed to manage and process temporal graphs, which are graphs where the relationships (edges) and/or the nodes have temporal attributes, meaning they change over time. This type of engine provides the necessary infrastructure to efficiently store, query, update, and analyze graphs with a temporal dimension.
+A temporal graph engine is a specialized software system designed to manage and process temporal graphs, which are graphs where the connections (edges) and/or the nodes have temporal attributes, meaning they change over time. This type of engine provides the necessary infrastructure to efficiently store, query, update, and analyze graphs with a temporal dimension.
 
 ## Key Features of a Temporal Graph Engine
 
 1. **Temporal Data Management**:
-   - **Nodes and Edges with Time Attributes**: Both nodes (vertices) and edges (connections) in the graph have timestamps or time intervals indicating when they exist or when the relationships are valid.
+   - **Nodes and Edges with Time Attributes**: Both nodes (vertices) and edges (connections) in the graph have timestamps or time intervals indicating when they exist or when the connections are valid.
    - **Versioning**: Keeps track of different states of the graph over time, allowing historical queries and analysis.
 
 2. **Efficient Storage**:
@@ -14,7 +14,7 @@ A temporal graph engine is a specialized software system designed to manage and 
 
 3. **Temporal Queries**:
    - **Time-based Queries**: Allows querying the graph for specific time points or intervals, such as finding all nodes and edges that existed at a particular time or have changed in a given time period.
-   - **Historical Analysis**: Supports queries that compare different states of the graph over time, such as tracking the evolution of relationships.
+   - **Historical Analysis**: Supports queries that compare different states of the graph over time, such as tracking the evolution of connections.
 
 4. **Graph Processing and Analysis**:
    - **Temporal Algorithms**: Implements algorithms specifically designed for temporal graphs, such as temporal shortest path, temporal centrality measures, and temporal community detection.
@@ -31,7 +31,7 @@ A temporal graph engine is a specialized software system designed to manage and 
 ## Use Cases of a Temporal Graph Engine
 
 1. **Social Networks**:
-   - Tracking the evolution of relationships and interactions over time, such as friendships, follows, or messages.
+   - Tracking the evolution of connections and interactions over time, such as friendships, follows, or messages.
 
 2. **Transportation Networks**:
    - Analyzing the dynamics of transportation systems, such as traffic flows, public transit schedules, and route changes.
