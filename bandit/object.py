@@ -27,6 +27,8 @@ from bandit.clock import Clock
 from bandit.identity import Identity
 from bandit.state import TemporalState
 
+from anarchy import AnarchyEdge
+
 
 class Object:
     """
@@ -83,6 +85,8 @@ class Object:
         self.clock = Clock(steps_size)
         self.id = Identity()
         self.state = TemporalState()
+        self.relationships = AnarchyEdge(name="relationship", type="directed")
+        self.interactions = AnarchyEdge(name="interactions", type="directed")
 
     @abstractmethod
     def _update(self) -> dict:
