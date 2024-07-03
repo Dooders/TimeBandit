@@ -5,9 +5,12 @@ within the simulation that maintains and updates its state.
 The Object class is designed to encapsulate the object's state and its update 
 method, existing within a defined Space and anchored at a specific Point in Time.
 
-Objects can be interconnected with other agents within the same space, allowing 
-them to model a wide range of phenomena, such as weather patterns, population 
-growth, city traffic flow, and the spread of diseases, among others.
+By interconnecting with other agents within the same space, objects can model 
+a wide range of phenomena, such as weather patterns, population growth, city 
+traffic flow, and the spread of diseases, among others.
+
+This design allows for a rich and dynamic representation of complex systems 
+through the interactions and relationships between objects.
 
 TODO
 ----
@@ -23,6 +26,8 @@ from abc import abstractmethod
 from bandit.clock import Clock
 from bandit.identity import Identity
 from bandit.state import TemporalState
+
+from anarchy import AnarchyEdge
 
 
 class Object:
@@ -80,6 +85,8 @@ class Object:
         self.clock = Clock(steps_size)
         self.id = Identity()
         self.state = TemporalState()
+        self.relationships = AnarchyEdge(name="relationship", type="directed")
+        self.interactions = AnarchyEdge(name="interactions", type="directed")
 
     @abstractmethod
     def _update(self) -> dict:

@@ -9,6 +9,11 @@ step (t_i) to its state at the previous time step (t_{i-1}), tracing back to the
 initial object state (t_0). This notation, referred to here as Temporal Notation, can 
 also extend to future states (t_{i+1}), thereby creating a coherent temporal sequence.
 
+The design of the Time module allows for the representation of the evolution and 
+development of object states over time, capturing both historical and potential future 
+states. This structured approach facilitates the analysis and simulation of temporal 
+patterns and trends within the simulation space.
+
 Temporal Notation
 -----------------
 Temporal Notation is a system used to reference the state of objects at specific 

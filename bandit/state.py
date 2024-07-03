@@ -2,20 +2,28 @@
 A state management system for TimeBandit.
 
 Using objects to encapsulate state and behavior, each entity in the simulation 
-is represented by an object. This allows for easy state management and 
-manipulation.
+is represented by an object. This approach facilitates easy state management 
+and manipulation.
 
-A TemporalState stores an object's State in a temporal sense, through StateBuffer.
-The StateBuffer is a deque with a maxlen where the current_index is the index of 
-the current state.
+The TemporalState class stores an object's state in a temporal sense, utilizing a 
+StateBuffer. The StateBuffer is a deque with a specified maxlen, where the 
+current_index indicates the position of the current state within the buffer.
 
-Allows for:
-- State saving and restoration.
-- State compression and decompression.
-- State storage and retrieval.
-- State traversal through the temporal state buffer.
-- Objects with varying state buffer sizes and functionality
+This system allows for:
+- State saving and restoration: Capture the current state and restore to a previous 
+  state as needed.
+- State compression and decompression: Efficiently manage memory and storage 
+  through compression techniques.
+- State storage and retrieval: Access and persist state data for future use.
+- State traversal through the temporal state buffer: Navigate through historical 
+  states within the buffer.
+- Objects with varying state buffer sizes and functionality: Customize the buffer 
+  size and capabilities for different objects, enabling flexible and adaptive state 
+  management.
 
+By encapsulating state and behavior within objects and managing these states temporally, 
+the system provides a robust framework for simulating dynamic and complex entities in 
+TimeBandit.
 
 NOTES
 -----
