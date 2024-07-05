@@ -128,7 +128,7 @@ class Graph(AnarchyGraph):
         """
         Returns the objects in the graph
         """
-        for node in self.nodes():
+        for node in self.nodes:
             yield self[node]
 
     @property
