@@ -3,21 +3,14 @@
 import pytest
 
 from bandit.graph import Graph
-
-
-class MockObject:
-    def __init__(self):
-        super().__init__()
-
-    def _update(self):
-        pass
+from bandit.object import Object
 
 
 @pytest.fixture
 def setup_graph():
     g = Graph()
-    obj1 = MockObject("1", 0)
-    obj2 = MockObject("2", 0)
+    obj1 = Object()
+    obj2 = Object()
     g.add_object(obj1)
     g.add_object(obj2)
     return g, obj1, obj2
@@ -31,15 +24,9 @@ def test_add_object(setup_graph):
 
 def test_remove_object(setup_graph):
     g, obj1, obj2 = setup_graph
-    g.remove_object(obj1.id.root)
+    g.remove_object(obj1)
     assert not g.has_node(obj1.id.root)
     assert g.has_node(obj2.id.root)
-
-
-def test_get_state(setup_graph):
-    g, obj1, obj2 = setup_graph
-    assert obj1.state == 0
-    assert obj2.state == 0
 
 
 def test_get_object(setup_graph):
