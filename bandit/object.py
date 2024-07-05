@@ -85,8 +85,8 @@ class Object:
         self.clock = Clock(steps_size)
         self.id = Identity()
         self.state = TemporalState()
-        self.connections = Anarchy(name="connection", type="directed")
-        self.interactions = Anarchy(name="interaction", type="directed")
+        self.connections = Anarchy(anarchy_name="connection")
+        self.interactions = Anarchy(anarchy_name="interaction")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.id.root}"
