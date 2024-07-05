@@ -23,11 +23,11 @@ TODO
 import pickle
 from abc import abstractmethod
 
+from anarchy import Anarchy
+
 from bandit.clock import Clock
 from bandit.identity import Identity
 from bandit.state import TemporalState
-
-from anarchy import AnarchyEdge
 
 
 class Object:
@@ -85,8 +85,14 @@ class Object:
         self.clock = Clock(steps_size)
         self.id = Identity()
         self.state = TemporalState()
-        self.relationships = AnarchyEdge(name="relationship", type="directed")
-        self.interactions = AnarchyEdge(name="interactions", type="directed")
+        self.connections = Anarchy(name="connection", type="directed")
+        self.interactions = Anarchy(name="interaction", type="directed")
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}:{self.id.root}"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}:{self.id.root}"
 
     @abstractmethod
     def _update(self) -> dict:
@@ -94,12 +100,6 @@ class Object:
         Updates the object state and returns the state after the update.
         """
         raise NotImplementedError("Subclass must implement _update method")
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}:{self.id.root}"
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}:{self.id.root}"
 
     def update(self) -> dict:
         """
@@ -111,6 +111,10 @@ class Object:
         -------
         dict:
             The state of the object
+
+        TODO
+        ----
+        - Finalize update() logic order
         """
         self._update()
         self.clock.update()
