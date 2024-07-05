@@ -131,16 +131,16 @@ class Space(Graph):
     @property
     def connections(self) -> list[tuple[str, str, str]]:
         """
-        Return a list of connections in the space.
+        Iterate over every object in the space and return a list of connections
         """
-        return [(u, v, d["connection"]) for u, v, d in self.edges.data()]
+        return [x.connections for x in self.objects.values()]
 
     @property
     def interactions(self) -> list[tuple[str, str, str]]:
         """
         Return a list of interactions in the space.
         """
-        return [(u, v, d["interaction"]) for u, v, d in self.edges.data()]
+        return
 
     @property
     def object_count(self) -> int:
