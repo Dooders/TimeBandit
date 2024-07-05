@@ -1,6 +1,5 @@
 # test_graph.py
 
-import networkx as nx
 import pytest
 
 from bandit.graph import Graph
@@ -59,7 +58,6 @@ def test_update(setup_graph):
 def test_draw(setup_graph):
     g, _, _ = setup_graph
     g.draw()
-    # Visual test - This is difficult to assert but we ensure it doesn't raise an error
 
 
 def test_objects(setup_graph):
@@ -67,7 +65,3 @@ def test_objects(setup_graph):
     objects = list(g.objects)
     assert obj1 in objects
     assert obj2 in objects
-
-
-if __name__ == "__main__":
-    pytest.main()

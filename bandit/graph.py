@@ -1,7 +1,6 @@
 """
-Graph class is a abstract class that represents a graph.
-
-It is a subclass of networkx.DiGraph.
+Graph class is a subclass of AnarchyGraph, a dict-like object that 
+represents a collection of nodes indexed by an ID.
 
 A graph is a collection of nodes and edges. The nodes are the objects in the graph
 and the edges are the connections between the objects.
@@ -31,12 +30,8 @@ if TYPE_CHECKING:
 
 class Graph(AnarchyGraph):
     """
-    Graph class is a abstract class that represents a graph.
-
-    It is a subclass of AnarchyGraph.
-
-    It is intended to be subclassed by concrete implementations of graphs. Like
-    the Space class and the Time class.
+    Graph is intended to be subclassed by concrete implementations of graphs.
+    Like the Space class and the Time class.
 
     Methods
     -------
@@ -72,7 +67,7 @@ class Graph(AnarchyGraph):
         object (Object):
             The object to add to the space
         """
-        self.add_node(object.id.root, object=object, **kwargs)
+        self.add_node(object.id.root, object, **kwargs)
 
     def remove_object(self, object) -> None:
         """
@@ -83,7 +78,7 @@ class Graph(AnarchyGraph):
         object (Object):
             The object to remove from the space
         """
-        self.remove_node(object)
+        self.remove_node(object.id.root)
 
     def get_object(self, object_id) -> "Object":
         """
@@ -99,7 +94,7 @@ class Graph(AnarchyGraph):
         Object:
             The object
         """
-        return self.get_node(object_id)["object"]
+        return self.get_node(object_id)
 
     @abstractmethod
     def _update(self) -> None:
@@ -119,11 +114,11 @@ class Graph(AnarchyGraph):
 
         TODO
         ----
-        - Optimize this process
+        - Finish this process
         """
         self.object_states = {}
         for object in self.objects:
-            # Update every object in the graph
+            # Update every object in the graph, it returns its new state
             self.object_states[object.id.root] = object.update()
 
         return self.state
@@ -134,7 +129,7 @@ class Graph(AnarchyGraph):
         Returns the objects in the graph
         """
         for node in self.nodes():
-            yield self.get_node(node)["object"]
+            yield self[node]
 
     @property
     def state(self) -> "State":
@@ -143,7 +138,7 @@ class Graph(AnarchyGraph):
         """
         return State(
             {
-                "object_count": len(self.object_states),
+                "object_count": len(self),
                 "object_states": self.object_states,
             }
         )
