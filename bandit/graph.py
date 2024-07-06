@@ -129,7 +129,7 @@ class Graph(AnarchyGraph):
         Returns the objects in the graph
         """
         for node in self.nodes:
-            yield self[node]
+            yield self[node.id.root]
 
     @property
     def state(self) -> "State":
