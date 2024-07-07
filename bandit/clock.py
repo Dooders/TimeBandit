@@ -1,5 +1,7 @@
 import time
 
+from bandit.data import ClockState, Cycle, Step
+
 
 class Clock:
     """
@@ -43,8 +45,8 @@ class Clock:
             be 1:0, 1:1, 1:2, ..., 1:9, 2:0, 2:1, ...
         """
         self.steps_per_cycle = steps_per_cycle
-        self._cycle = 1
-        self._step = 0
+        self._cycle: Cycle = 1
+        self._step: Step = 0
         self._start_time = time.time()
 
     def update(self) -> None:
@@ -76,8 +78,8 @@ class Clock:
         """
         Resets the clock to the starting time.
         """
-        self._cycle = 1
-        self._step = 0
+        self._cycle: Cycle = 1
+        self._step: Step = 0
 
     def __str__(self) -> str:
         """
@@ -106,15 +108,22 @@ class Clock:
         return time.time() - self._start_time
 
     @property
-    def cycle(self) -> int:
+    def cycle(self) -> "Cycle":
         """
         Returns the current cycle number.
         """
         return self._cycle
 
     @property
-    def step(self) -> int:
+    def step(self) -> "Step":
         """
         Returns the current step number.
         """
         return self._step
+
+    @property
+    def state(self) -> "ClockState":
+        """
+        Returns the current state of the clock.
+        """
+        return ClockState(cycle=self._cycle, step=self._step)

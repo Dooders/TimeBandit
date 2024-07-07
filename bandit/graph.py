@@ -2,8 +2,8 @@
 Graph class is a subclass of AnarchyGraph, a dict-like object that 
 represents a collection of nodes indexed by an ID.
 
-A graph is a collection of nodes and edges. The nodes are the objects in the graph
-and the edges are the connections between the objects.
+A decentralized graph is a collection of nodes and edges. The nodes are the 
+objects in the graph and the edges are the connections between the objects.
 
 It is intended to be subclassed by concrete implementations of graphs. Like
 the Space class and the Time class.
@@ -14,7 +14,6 @@ TODO
     define with every child
 - Investigate if class should inherit from Object that way it has a state, 
     clock, _update, etc
-- Investigate if class should also be a Graph Neural Network
 """
 
 from abc import abstractmethod
@@ -111,10 +110,6 @@ class Graph(AnarchyGraph):
         Iterates through every object in the graph and updates their state.
 
         Returns the state of the graph.
-
-        TODO
-        ----
-        - Finish this process
         """
         self.object_states = {}
         for object in self.objects:

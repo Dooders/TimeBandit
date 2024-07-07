@@ -224,6 +224,8 @@ class StateBuffer:
             # start, stop, step = index.indices(len(self.buffer))
             # # Return the states at the given indices
             # return [self[i] for i in range(start, stop, step)]
+        elif isinstance(index, str):
+            return self.buffer[0][index]
         else:
             raise TypeError("Invalid argument type")
 

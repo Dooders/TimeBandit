@@ -60,12 +60,6 @@ def test_update(setup_graph):
     assert obj2.state()["cycle"] == 2
 
 
-#! Need to update draw method to not require node_id
-# def test_draw(setup_graph):
-#     g, _, _ = setup_graph
-#     g.draw()
-
-
 def test_objects(setup_graph):
     g, obj1, obj2 = setup_graph
     objects = list(g.objects)

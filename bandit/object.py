@@ -30,31 +30,6 @@ from bandit.identity import Identity
 from bandit.state import TemporalState
 
 
-class ClockState:
-    cycle: int
-    step: int
-
-
-class IdentityState:
-    root: str
-    temporal_id: str
-
-
-class ConnectionsState:
-    pass
-
-
-class InteractionsState:
-    pass
-
-
-class ObjectState:
-    clock: ClockState
-    id: IdentityState
-    connections: ConnectionsState
-    interactions: InteractionsState
-
-
 class Object:
     """
     A class to represent an object in a simulation.
