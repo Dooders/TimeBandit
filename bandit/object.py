@@ -30,6 +30,31 @@ from bandit.identity import Identity
 from bandit.state import TemporalState
 
 
+class ClockState:
+    cycle: int
+    step: int
+
+
+class IdentityState:
+    root: str
+    temporal_id: str
+
+
+class ConnectionsState:
+    pass
+
+
+class InteractionsState:
+    pass
+
+
+class ObjectState:
+    clock: ClockState
+    id: IdentityState
+    connections: ConnectionsState
+    interactions: InteractionsState
+
+
 class Object:
     """
     A class to represent an object in a simulation.
@@ -85,8 +110,9 @@ class Object:
         self.clock = Clock(steps_size)
         self.id = Identity()
         self.state = TemporalState()
-        self.connections = Anarchy(anarchy_name="connection")
-        self.interactions = Anarchy(anarchy_name="interaction")
+        self.connections = Anarchy(anarchy_name="connections")
+        self.interactions = Anarchy(anarchy_name="interactions")
+        self.state.update(self)
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.id.root}"
@@ -120,7 +146,7 @@ class Object:
         self.clock.update()
         self.id.update(self.clock)
 
-        return self.state.update()
+        return self.state.update(self)
 
     def save(self, path: str) -> str:
         """
