@@ -106,13 +106,13 @@ class Space(Graph):
         connection : str
             The type of connection between the two objects.
         """
-        self.add_edge(object1, object2, connection=connection)
+        object1.connections.add(object2.id.root, object2, connection)
 
     def remove_connection(self, object1: "Object", object2: "Object") -> None:
         """
         Remove a connection between two objects.
         """
-        self.remove_edge(object1, object2)
+        object1.connections.remove(object2.id.root)
 
     def add_interaction(
         self, object1: "Object", object2: "Object", interaction: str
@@ -120,27 +120,27 @@ class Space(Graph):
         """
         Add an interaction between two objects.
         """
-        self.add_edge(object1, object2, interaction=interaction)
+        object1.interactions.add(object2.id.root, object2, interaction)
 
     def remove_interaction(self, object1: "Object", object2: "Object") -> None:
         """
         Remove an interaction between two objects.
         """
-        self.remove_edge(object1, object2)
+        object1.interactions.remove(object2.id.root)
 
     @property
     def connections(self) -> list[tuple[str, str, str]]:
         """
         Iterate over every object in the space and return a list of connections
         """
-        return [x.connections for x in self.objects.values()]
+        return [x.connections for x in self.objects if x.connections]
 
     @property
     def interactions(self) -> list[tuple[str, str, str]]:
         """
         Return a list of interactions in the space.
         """
-        return
+        return [x.interactions for x in self.objects if x.interactions]
 
     @property
     def object_count(self) -> int:
@@ -157,6 +157,6 @@ class Space(Graph):
         return State(
             {
                 "object_count": self.object_count,
-                "objects": {node: node.state() for node in self.objects},
+                "objects": {node: node.state for node in self.objects},
             }
         )
