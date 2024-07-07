@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from bandit.object import Object
-from bandit.state import State, StateBuffer, TemporalState
+from bandit.state import State, StateBuffer
 
 
 class MockObject(Object):
