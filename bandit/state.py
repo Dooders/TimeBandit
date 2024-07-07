@@ -37,6 +37,7 @@ NOTES
 
 TODO
 ----
+- More intuitive API to get state and state values
 - Implement the encode and decode methods in the ObjectState class. Would need
     to encode the object state into a single string, and then decode it back to 
     original state. This will give the ability to store the state of an object 
@@ -277,7 +278,7 @@ class TemporalState:
         """
         object_state = State(
             cycle=object.clock.cycle,
-            tep=object.clock.step,
+            step=object.clock.step,
             root_id=object.id.root,
             temporal_id=object.id.temporal,
         )
@@ -330,4 +331,6 @@ class TemporalState:
         """
         Returns the current state.
         """
+        if len(self.state_buffer) == 0:
+            raise IndexError("No states in the buffer")
         return self.state_buffer[self.relative_index]
