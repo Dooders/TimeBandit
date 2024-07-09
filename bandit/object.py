@@ -27,7 +27,7 @@ from anarchy import Anarchy
 
 from bandit.clock import Clock
 from bandit.identity import Identity
-from bandit.state import TemporalState
+from bandit.temporal import TemporalBuffer
 
 
 class Object:
@@ -50,7 +50,7 @@ class Object:
         cycles and steps
     id (Identity):
         The identity of the object including root and temporal IDs
-    state (TemporalState):
+    state (TemporalBuffer):
         Includes buffered previous states
 
     Methods
@@ -84,10 +84,10 @@ class Object:
         self.steps_size = steps_size
         self.clock = Clock(steps_size)
         self.id = Identity()
-        self.state = TemporalState()
+        self.state = TemporalBuffer()
         self.connections = Anarchy(anarchy_name="connections")
         self.interactions = Anarchy(anarchy_name="interactions")
-        self.state.update(self)
+        self.state.update(self)  # Adds the object's initial state to the buffer
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.id.root}"
