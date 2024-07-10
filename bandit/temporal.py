@@ -109,7 +109,7 @@ class TemporalBuffer:
         Returns the current state.
     """
 
-    def __init__(self, temporal_depth: int) -> None:
+    def __init__(self, temporal_depth: int = 100) -> None:
         """
         Parameters
         ----------
@@ -221,9 +221,9 @@ class TemporalBuffer:
         """
         Returns the state at the given index.
         """
-        if len(self.state_buffer) == 0:
+        if len(self.buffer) == 0:
             raise IndexError("No states in the buffer")
-        return self.state_buffer[index]
+        return self.buffer[index]
 
     def __contains__(self, key: str) -> bool:
         """
