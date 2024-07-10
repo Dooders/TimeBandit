@@ -53,11 +53,11 @@ def test_get_object(setup_graph):
 
 def test_update(setup_graph):
     g, obj1, obj2 = setup_graph
-    assert obj1.state()["cycle"] == 1
-    assert obj2.state()["cycle"] == 1
+    assert len(obj1.state) == 1
+    assert len(obj2.state) == 1
     g.update()
-    assert obj1.state()["cycle"] == 2
-    assert obj2.state()["cycle"] == 2
+    assert len(obj1.state) == 2
+    assert len(obj2.state) == 2
 
 
 def test_objects(setup_graph):

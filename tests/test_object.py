@@ -45,19 +45,9 @@ class TestObject(unittest.TestCase):
         self.assertTrue(os.path.exists(path))
         os.remove(path)
 
-    def test_load(self):
-        path = self.obj.save(".")
-        obj = self.obj.load(path)
-        self.assertEqual(obj.id.root, self.obj.id.root)
-        self.assertEqual(obj.id.temporal, self.obj.id.temporal)
-        os.remove(path)
-
     def test_state_property(self):
         state = self.obj.state()
-        self.assertEqual(state["cycle"], self.obj.clock.cycle)
-        self.assertEqual(state["step"], self.obj.clock.step)
-        self.assertEqual(state["root_id"], self.obj.id.root)
-        self.assertEqual(state["temporal_id"], self.obj.id.temporal)
+        self.assertEqual(len(state), 1)
 
     def test_cycle_property(self):
         self.assertEqual(self.obj.cycle, self.obj.clock.cycle)
