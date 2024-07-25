@@ -24,13 +24,22 @@ import pickle
 from abc import abstractmethod
 
 from anarchy import Anarchy
+from pydantic import BaseModel
+from temporal import TemporalObject
 
 from bandit.clock import Clock
 from bandit.identity import Identity
-from bandit.temporal import TemporalBuffer
 
 
-class Object:
+class ObjectState(BaseModel):
+    step_size: int
+    root_id: str
+    temporal_id: str
+    cycle: int
+    step: int
+
+
+class Object(TemporalObject):
     """
     A class to represent an object in a simulation.
 
@@ -81,13 +90,12 @@ class Object:
         steps_per_cycle (int):
             The number of steps per cycle
         """
+        super().__init__()
         self.steps_size = steps_size
         self.clock = Clock(steps_size)
         self.id = Identity()
-        self.state = TemporalBuffer()
         self.connections = Anarchy(anarchy_name="connections")
         self.interactions = Anarchy(anarchy_name="interactions")
-        self.state.update(self)  # Adds the object's initial state to the buffer
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}:{self.id.root}"
@@ -121,7 +129,7 @@ class Object:
         self.clock.update()
         self.id.update(self.clock)
 
-        return self.state.update(self)
+        return super().update(self.state, self.id.temporal)
 
     def save(self, path: str) -> str:
         """
@@ -152,6 +160,13 @@ class Object:
             return ""
 
     @property
+    def state(self):
+        """
+        Returns the state of the object
+        """
+        pass
+
+    @property
     def cycle(self) -> int:
         """
         Returns the relative cycle of the object
@@ -164,3 +179,27 @@ class Object:
         Returns the relative step of the object
         """
         return self.clock.step
+
+
+class BallState(ObjectState):
+    mass: float
+    x: float
+    y: float
+    z: float
+
+
+class Ball(Object):
+    def __init__(self, step_size, mass, x, y, z):
+        self.mass = mass
+        self.x = x
+        self.y = y
+        self.z = z
+        self.vx = 0
+        self.vy = 0
+        self.vz = 0
+        super().__init__(step_size)
+
+    def _update(self):
+        self.x += self.vx
+        self.y += self.vy
+        self.z += self.vz
