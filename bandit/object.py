@@ -14,9 +14,6 @@ through the interactions and relationships between objects.
 
 TODO
 ----
-- Investigate more efficient data structures or techniques for state 
-    management could be worthwhile, especially for simulations with a large 
-    number of objects or states.
 - Finalize update() logic order
 """
 
@@ -31,14 +28,6 @@ from bandit.clock import Clock
 from bandit.identity import Identity
 
 
-class ObjectState(BaseModel):
-    step_size: int
-    root_id: str
-    temporal_id: str
-    cycle: int
-    step: int
-
-
 class Object(TemporalObject):
     """
     A class to represent an object in a simulation.
@@ -51,16 +40,16 @@ class Object(TemporalObject):
 
     Attributes
     ----------
-    steps_size (int):
-        The number of steps per cycle. For example, if steps_size is 5, a cycle
+    step_size (int):
+        The number of steps per cycle. For example, if step_size is 5, a cycle
         is counted every 5 steps.
     clock (Clock):
         The clock of the object, contains the relative time of the object in
         cycles and steps
     id (Identity):
         The identity of the object including root and temporal IDs
-    state (TemporalBuffer):
-        Includes buffered previous states
+    state ():
+        Includes the current state of the object
 
     Methods
     -------
@@ -83,7 +72,7 @@ class Object(TemporalObject):
         Returns the step of the object
     """
 
-    def __init__(self, steps_size: int = 1) -> None:
+    def __init__(self, step_size: int = 1) -> None:
         """
         Parameters
         ----------
@@ -91,8 +80,8 @@ class Object(TemporalObject):
             The number of steps per cycle
         """
         super().__init__()
-        self.steps_size = steps_size
-        self.clock = Clock(steps_size)
+        self.step_size = step_size
+        self.clock = Clock(step_size)
         self.id = Identity()
         self.connections = Anarchy(anarchy_name="connections")
         self.interactions = Anarchy(anarchy_name="interactions")
@@ -129,7 +118,7 @@ class Object(TemporalObject):
         self.clock.update()
         self.id.update(self.clock)
 
-        return super().update(self.state, self.id.temporal)
+        return super().update(self.state(), self.id.temporal)
 
     def save(self, path: str) -> str:
         """
@@ -159,12 +148,18 @@ class Object(TemporalObject):
             print(f"Failed to load object: {e}")
             return ""
 
-    @property
+    @abstractmethod
     def state(self):
         """
         Returns the state of the object
         """
-        pass
+        return {
+            "step_size": self.step_size,
+            "root_id": self.id.root,
+            "temporal_id": self.id.temporal,
+            "cycle": self.clock.cycle,
+            "step": self.clock.step,
+        }
 
     @property
     def cycle(self) -> int:
@@ -179,27 +174,3 @@ class Object(TemporalObject):
         Returns the relative step of the object
         """
         return self.clock.step
-
-
-class BallState(ObjectState):
-    mass: float
-    x: float
-    y: float
-    z: float
-
-
-class Ball(Object):
-    def __init__(self, step_size, mass, x, y, z):
-        self.mass = mass
-        self.x = x
-        self.y = y
-        self.z = z
-        self.vx = 0
-        self.vy = 0
-        self.vz = 0
-        super().__init__(step_size)
-
-    def _update(self):
-        self.x += self.vx
-        self.y += self.vy
-        self.z += self.vz
