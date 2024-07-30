@@ -1,7 +1,9 @@
 from fizicks import Motion, Position, Velocity
 
 from bandit.object import Object
+from bandit.space import Space
 
+space = Space()
 
 class Ball(Object):
     def __init__(self, position, velocity, mass):
@@ -27,7 +29,8 @@ class Ball(Object):
 
 
 ball = Ball([0, 0, 0], [1, 0, 0], 1)
-
-ball.update()
-ball.update()
-print(ball.state())
+space.add_object(ball)
+print(space.state())
+print('***********************')
+space.update()
+print(space.state())

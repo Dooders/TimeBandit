@@ -60,7 +60,6 @@ TODO
 from typing import TYPE_CHECKING
 
 from bandit.graph import Graph
-from bandit.state import State
 
 if TYPE_CHECKING:
     from bandit.object import Object
@@ -86,6 +85,8 @@ class Space(Graph):
         Return the number of objects in the space.
     state
         Return the state of the space and the state of the objects in the space
+    update
+        Update the space and the objects in the space.
     """
 
     def __init__(self) -> None:
@@ -128,6 +129,22 @@ class Space(Graph):
         """
         object1.interactions.remove(object2.id.root)
 
+    def update(self) -> None:
+        """
+        Update the space and the objects in the space.
+        """
+        for object in self.objects:
+            object.update()
+
+    def state(self) -> dict:
+        """
+        Return the state of the space and the state of the objects in the space
+        """
+        return {
+            "object_count": self.object_count,
+            "objects": {node: node.state() for node in self.objects},
+        }
+
     @property
     def connections(self) -> list[tuple[str, str, str]]:
         """
@@ -148,15 +165,3 @@ class Space(Graph):
         Return the number of objects in the space.
         """
         return len(self.nodes)
-
-    @property
-    def state(self) -> State:
-        """
-        Return the state of the space and the state of the objects in the space
-        """
-        return State(
-            {
-                "object_count": self.object_count,
-                "objects": {node: node.state for node in self.objects},
-            }
-        )
