@@ -21,7 +21,6 @@ import pickle
 from abc import abstractmethod
 
 from anarchy import Anarchy
-from pydantic import BaseModel
 from temporal import TemporalObject
 
 from bandit.clock import Clock
