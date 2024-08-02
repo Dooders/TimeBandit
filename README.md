@@ -2,7 +2,7 @@
 
 ![Project Status](https://img.shields.io/badge/status-in%20development-orange)
 
-> Explore time and space like TimeBandits
+> Explore spacetime like TimeBandits
 
 An object-oriented simulation framework in Python.
 
