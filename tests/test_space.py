@@ -20,6 +20,30 @@ def test_add_object(space, objects):
     assert space.object_count == 3
 
 
+def test_add_object(space, objects):
+    for obj in objects:
+        space.add_object(obj)
+    assert space.object_count == 3
+    assert space.has_node(objects[0].id.root)
+
+
+def test_remove_object(space, objects):
+    obj1, obj2 = objects[:2]
+    space.add_object(obj1)
+    space.add_object(obj2)
+    space.remove_object(obj1)
+    assert not space.has_node(obj1.id.root)
+    assert space.has_node(obj2.id.root)
+
+
+def test_get_object(space, objects):
+    obj1, obj2 = objects[:2]
+    space.add_object(obj1)
+    space.add_object(obj2)
+    obj = space.get_object(obj1.id.root)
+    assert obj.state == obj1.state
+
+
 def test_add_connection(space, objects):
     obj1, obj2, obj3 = objects
     space.add_object(obj1)
@@ -67,6 +91,6 @@ def test_object_count(space, objects):
 def test_state(space, objects):
     for obj in objects:
         space.add_object(obj)
-    state = space.state
+    state = space.state()
     assert state["object_count"] == 3
-    assert "objects" in state
+    assert "object_states" in state

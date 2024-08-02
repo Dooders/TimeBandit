@@ -45,31 +45,27 @@ their connections as edges in a graph.
     # Define connections
     room_space.add_connection(chair, table, connection="next to")
     room_space.add_connection(table, lamp, connection="under")
-
-    # Visualize the objects and connections
-    room_space.draw()
     
 TODO
 ----
 - Build out Connection and Interaction edges
-- Add methods to Space for getting the state of the space
 - Loading a Space from a SpaceState
-- Tests
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator
 
-from bandit.graph import Graph
+from anarchy import AnarchyGraph
 
 if TYPE_CHECKING:
     from bandit.object import Object
 
 
-class Space(Graph):
+class Space(AnarchyGraph):
     """
     Space class is a directed graph that represents the space of objects (nodes).
 
-    It is a subclass of networkx.DiGraph.
+    It is a subclass of AnarchyGraph which is a decentralized graph where an object
+    contains its own state and the state of its connections and interactions.
 
     Methods
     -------
@@ -81,12 +77,27 @@ class Space(Graph):
         Add an interaction between two objects.
     remove_interaction(object1, object2)
         Remove an interaction between two objects.
+    add_object(object)
+        Add an object to the space.
+    remove_object(object)
+        Remove an object from the space.
+    get_object(object_id)
+        Get an object from the space.
+    update()
+        Update the space and the objects in the space.
+    state()
+        Return the state of the space and the state of the objects in the space
+
+    Properties
+    ----------
+    objects
+        Return the objects in the space.
+    connections
+        Return the connections in the space.
+    interactions
+        Return the interactions in the space.
     object_count
         Return the number of objects in the space.
-    state
-        Return the state of the space and the state of the objects in the space
-    update
-        Update the space and the objects in the space.
     """
 
     def __init__(self) -> None:
@@ -129,6 +140,44 @@ class Space(Graph):
         """
         object1.interactions.remove(object2.id.root)
 
+    def add_object(self, object: "Object", **kwargs) -> None:
+        """
+        Adds an object to the space
+
+        Parameters
+        ----------
+        object (Object):
+            The object to add to the space
+        """
+        self.add_node(object.id.root, object, **kwargs)
+
+    def remove_object(self, object: "Object") -> None:
+        """
+        Removes an object from the space
+
+        Parameters
+        ----------
+        object (Object):
+            The object to remove from the space
+        """
+        self.remove_node(object.id.root)
+
+    def get_object(self, object_id: str) -> "Object":
+        """
+        Returns the object
+
+        Parameters
+        ----------
+        object_id (str):
+            The id of the object
+
+        Returns
+        -------
+        Object:
+            The object
+        """
+        return self.get_node(object_id)
+
     def update(self) -> None:
         """
         Update the space and the objects in the space.
@@ -142,8 +191,16 @@ class Space(Graph):
         """
         return {
             "object_count": self.object_count,
-            "objects": {node: node.state() for node in self.objects},
+            "object_states": {node: node.state() for node in self.objects},
         }
+
+    @property
+    def objects(self) -> Generator["Object", None, None]:
+        """
+        Returns the objects in the graph
+        """
+        for node in self.nodes:
+            yield self[node.id.root]
 
     @property
     def connections(self) -> list[tuple[str, str, str]]:
