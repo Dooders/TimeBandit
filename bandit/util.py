@@ -1,9 +1,4 @@
 import hashlib
-from collections import OrderedDict
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from bandit.state import State
 
 
 def generate_hash(object_state) -> str:
